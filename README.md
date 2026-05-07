@@ -29,7 +29,7 @@ Each entry includes its source and repetition count.
 
 **iPhone (recommended):** Download → open in Safari → Share → *Add to Home Screen* for an app-like experience.
 
-**GitHub Pages:** [Live demo](https://yourusername.github.io/daily-adhkar)
+**GitHub Pages:** [Live demo](https://adam-zs.github.io/daily-adhkar/)
 
 ## 📁 Files
 
