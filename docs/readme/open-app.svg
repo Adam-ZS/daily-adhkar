@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="184" height="50" viewBox="0 0 184 50" role="img" aria-labelledby="title">
+  <title id="title">Open the app</title>
+  <defs>
+    <linearGradient id="surface" x2="1" y2="1"><stop stop-color="#ffe0a6"/><stop offset="1" stop-color="#e9ac76"/></linearGradient>
+  </defs>
+  <rect x="1" y="1" width="182" height="48" rx="15" fill="url(#surface)" stroke="#ffe0a6"/>
+  <rect x="9" y="9" width="32" height="32" rx="10" fill="#2a1915" fill-opacity=".1"/>
+  <g transform="translate(14 14)" color="#723e29" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linejoin="round" stroke-linecap="round"><circle cx="11" cy="11" r="9"/><path d="M8 6.5 15 11l-7 4.5z" fill="currentColor" stroke="none"/></g>
+  <text x="51" y="30" font-family="system-ui, sans-serif" font-size="14" font-weight="720" fill="#2a1915">Open the app</text>
+</svg>
