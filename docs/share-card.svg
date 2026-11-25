@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Daily Adhkar share card</title>
+  <desc id="desc">A gold star sits in a geometric medallion between a rising sun and a crescent moon on a dark plum sky.</desc>
+  <defs>
+    <linearGradient id="sky" x2="1" y2="1">
+      <stop stop-color="#17121e"/>
+      <stop offset=".46" stop-color="#211625"/>
+      <stop offset="1" stop-color="#12121f"/>
+    </linearGradient>
+    <radialGradient id="dawn">
+      <stop stop-color="#b67655" stop-opacity=".68"/>
+      <stop offset="1" stop-color="#b67655" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="night">
+      <stop stop-color="#665aa5" stop-opacity=".58"/>
+      <stop offset="1" stop-color="#665aa5" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="core">
+      <stop stop-color="#70434d"/>
+      <stop offset=".7" stop-color="#382635"/>
+      <stop offset="1" stop-color="#271f31"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#fff3ce"/>
+      <stop offset=".56" stop-color="#f3c28f"/>
+      <stop offset="1" stop-color="#b87560"/>
+    </linearGradient>
+    <pattern id="lattice" width="62" height="62" patternUnits="userSpaceOnUse">
+      <path d="M-31 31 31-31M0 62 62 0M31 93 93 31M-31 31 31 93M0 0 62 62M31-31 93 31"
+        fill="none" stroke="#e9cbdc" stroke-opacity=".09"/>
+    </pattern>
+    <path id="spark" d="M0-13C2-3 3-2 13 0 3 2 2 3 0 13-2 3-3 2-13 0-3-2-2-3 0-13Z"/>
+    <path id="arch" d="M-234 270V-5Q-234-163 0-260Q234-163 234-5V270"/>
+    <path id="hill" d="M-30 650V537Q115 436 248 497T500 530Q653 500 782 538T1230 506V650Z"/>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#sky)"/>
+  <ellipse cx="216" cy="392" rx="500" ry="330" fill="url(#dawn)"/>
+  <ellipse cx="1022" cy="213" rx="460" ry="319" fill="url(#night)"/>
+  <rect width="1200" height="630" fill="url(#lattice)"/>
+  <rect x="29" y="29" width="1142" height="572" rx="26" fill="none" stroke="#dba984" stroke-opacity=".4"/>
+  <rect x="39" y="39" width="1122" height="552" rx="22" fill="none" stroke="#dec8e7" stroke-opacity=".14"/>
+
+  <g transform="translate(600 313)" fill="none">
+    <use href="#arch" stroke="#e9b48d" stroke-opacity=".55" stroke-width="1.6"/>
+    <use href="#arch" transform="scale(.93)" stroke="#c6a3c8" stroke-opacity=".3"/>
+    <use href="#arch" transform="scale(.86)" stroke="#f5c393" stroke-opacity=".2"/>
+  </g>
+
+  <g transform="translate(251 345)" stroke="#f2bb87" stroke-width="2" fill="none" stroke-linecap="round">
+    <path d="M-58 21H58M-46 33H46M-29 45H29" opacity=".65"/>
+    <path d="M-42 9a42 42 0 0 1 84 0Z" fill="#e9a774" fill-opacity=".18"/>
+    <path d="M0-65v15m-45 4 10 12m80-12L35-34M-66-15l14 6m118-6-14 6"/>
+    <circle r="89" stroke-opacity=".28"/>
+  </g>
+  <g transform="translate(947 310)" fill="none">
+    <circle r="89" stroke="#c7b4f2" stroke-opacity=".42"/>
+    <path d="M16-51A53 53 0 1 0 45 36 52 52 0 0 1 16-51Z" fill="#d7c4f3" fill-opacity=".26" stroke="#dfcffb" stroke-width="2"/>
+    <use href="#spark" transform="translate(40 -28) scale(.66)" fill="#dfcffb"/>
+    <use href="#spark" transform="translate(56 -5) scale(.32)" fill="#dfcffb"/>
+  </g>
+
+  <g fill="none" stroke-width="1.5">
+    <use href="#hill" stroke="#e0ac86" stroke-opacity=".39"/>
+    <use href="#hill" transform="translate(0 18)" stroke="#dba89d" stroke-opacity=".25"/>
+    <use href="#hill" transform="translate(0 34)" stroke="#bea7d0" stroke-opacity=".19"/>
+  </g>
+
+  <g transform="translate(600 310)">
+    <circle r="179" fill="#251e2e" stroke="#b48e89" stroke-opacity=".6"/>
+    <circle r="167" fill="url(#core)" stroke="#ad898d" stroke-width="1.5"/>
+    <rect x="-110" y="-110" width="220" height="220" rx="32" fill="none" stroke="#f4ca9f" stroke-opacity=".72"/>
+    <rect x="-110" y="-110" width="220" height="220" rx="32" fill="none" stroke="#f4ca9f" stroke-opacity=".72" transform="rotate(45)"/>
+    <circle r="100" fill="#322333" stroke="#efb685" stroke-opacity=".8" stroke-width="2"/>
+    <circle r="90" fill="url(#core)" stroke="#cf91a4" stroke-opacity=".42"/>
+    <use href="#spark" transform="scale(5.2)" fill="url(#gold)"/>
+    <use href="#spark" transform="translate(-126 -126) scale(.52)" fill="#f0c08e"/>
+    <use href="#spark" transform="translate(126 126) scale(.52)" fill="#f0c08e"/>
+  </g>
+
+  <g fill="#f3c598">
+    <use href="#spark" transform="translate(322 157)"/>
+    <use href="#spark" transform="translate(155 235) scale(.6)"/>
+    <use href="#spark" transform="translate(214 453) scale(.64)"/>
+    <use href="#spark" transform="translate(345 432) scale(.5)"/>
+    <use href="#spark" transform="translate(600 95) scale(.65)"/>
+    <use href="#spark" transform="translate(600 524) scale(.65)"/>
+  </g>
+  <g fill="#d8c6f9">
+    <use href="#spark" transform="translate(893 147) scale(.86)"/>
+    <use href="#spark" transform="translate(1028 199) scale(.56)"/>
+    <use href="#spark" transform="translate(1032 419) scale(.65)"/>
+    <use href="#spark" transform="translate(859 432) scale(.44)"/>
+  </g>
+</svg>
