@@ -1,6 +1,6 @@
 const scope = self.registration.scope;
 const prefix = 'daily-adhkar-shell:' + scope + ':';
-const cacheName = prefix + '2';
+const cacheName = prefix + '3';
 const shell = new Set(
   ['./', './index.html', './adhkar.html', './manifest.webmanifest', './icon-192.png', './icon-512.png']
     .map(path => new URL(path, scope).href)

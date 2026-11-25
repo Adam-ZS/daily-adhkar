@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="340" viewBox="0 0 1120 340" role="img" aria-labelledby="title desc">
+  <title id="title">Daily Adhkar · أذكاري اليومية</title>
+  <desc id="desc">A golden eight-pointed ornament over a plum background, with the project name and features in English and Arabic.</desc>
+  <defs>
+    <linearGradient id="surface" x1="0" y1="1" x2="1" y2="0" gradientUnits="objectBoundingBox">
+      <stop stop-color="#2f2037"/>
+      <stop offset="1" stop-color="#16111d"/>
+    </linearGradient>
+    <radialGradient id="light">
+      <stop stop-color="#865040" stop-opacity=".8"/>
+      <stop offset="1" stop-color="#865040" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop stop-color="#fff0c5"/>
+      <stop offset="1" stop-color="#d89566"/>
+    </linearGradient>
+    <pattern id="lattice" width="56" height="56" patternUnits="userSpaceOnUse">
+      <path d="M-28 28 28-28M0 56 56 0M28 84 84 28M-28 28 28 84M0 0 56 56M28-28 84 28"
+        fill="none" stroke="#ead7ea" stroke-opacity=".09"/>
+    </pattern>
+    <clipPath id="card"><rect width="1120" height="340" rx="32"/></clipPath>
+  </defs>
+  <g clip-path="url(#card)">
+    <rect width="1120" height="340" fill="url(#surface)"/>
+    <ellipse cx="260" cy="160" rx="420" ry="265" fill="url(#light)"/>
+    <rect width="1120" height="340" fill="url(#lattice)"/>
+    <g transform="translate(220 170)">
+      <circle r="123" fill="#251c2b" stroke="#7e5b61"/>
+      <rect x="-86" y="-86" width="172" height="172" rx="25" fill="none" stroke="#dba87d" opacity=".55" transform="rotate(45)"/>
+      <rect x="-86" y="-86" width="172" height="172" rx="25" fill="none" stroke="#dba87d" opacity=".55"/>
+      <circle r="69" fill="#3a2834" stroke="#e8b581"/>
+      <path d="M0-60C8-19 19-8 60 0 19 8 8 19 0 60-8 19-19 8-60 0-19-8-8-19 0-60Z" fill="url(#gold)"/>
+      <path d="M-115-105l9-9 9 9-9 9zm215 211 7-7 7 7-7 7z" fill="#f2ce9a"/>
+    </g>
+    <g font-family="system-ui, sans-serif">
+      <text x="431" y="105" font-size="26" font-weight="700" fill="#f2ca96">أذكاري اليومية</text>
+      <text x="426" y="177" font-size="70" font-weight="750" fill="#fff2e8">Daily Adhkar</text>
+      <text x="431" y="222" font-size="26" fill="#d8c8d9">Morning &amp; evening remembrance</text>
+      <rect x="431" y="252" width="125" height="42" rx="21" fill="#4a352c" stroke="#976c50"/>
+      <rect x="568" y="252" width="143" height="42" rx="21" fill="#393149" stroke="#776190"/>
+      <rect x="723" y="252" width="132" height="42" rx="21" fill="#253d39" stroke="#587e71"/>
+      <text x="494" y="279" text-anchor="middle" font-size="18" font-weight="650" fill="#ffdbab">Arabic RTL</text>
+      <text x="639" y="279" text-anchor="middle" font-size="18" font-weight="650" fill="#e8dbff">Quranic font</text>
+      <text x="789" y="279" text-anchor="middle" font-size="18" font-weight="650" fill="#c5ead9">Offline ready</text>
+    </g>
+  </g>
+  <rect x="1" y="1" width="1118" height="338" rx="31" fill="none" stroke="#93695b" stroke-opacity=".65" stroke-width="2"/>
+</svg>

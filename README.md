@@ -1,36 +1,43 @@
-# أذكاري اليومية · Daily Adhkar
+<div align="center">
+  <img src="docs/readme-banner.svg" width="100%" alt="Daily Adhkar · أذكاري اليومية. Arabic morning and evening remembrance with Quranic typography and offline reading.">
+  <p dir="rtl">أذكار الصباح والمساء وأدعية من القرآن والسنة. اقرأ بخطّ نسخي، وسجّل تكرار كل ذكر، وتابع وردك اليومي.</p>
+  <p><strong>Read your morning and evening adhkar, count repetitions, and pick up where you left off.</strong></p>
+  <p><a href="https://adam-zs.github.io/daily-adhkar/"><strong>Open the app</strong></a> · <a href="https://raw.githubusercontent.com/Adam-ZS/daily-adhkar/main/adhkar.html">Get the offline HTML</a> · <a href="https://github.com/Adam-ZS/daily-adhkar/stargazers">Stars</a></p>
+</div>
 
-أذكار الصباح والمساء، وأدعية مختارة من القرآن والسنة، بتصميم داكن للقراءة على الهاتف. سجّل تكرار كل ذكر، وتابع من حيث توقّفت.
+## A daily reading app for your phone
 
-Daily Adhkar is an Arabic reading app for morning and evening remembrance. Read on your phone, tap to count each repetition, and return to the next unfinished dhikr.
+<table>
+  <tr>
+    <td width="58%" valign="top">
+      <h3>Read at your pace</h3>
+      <p>Amiri Quran gives the Arabic reading text a traditional Naskh style. Adjust the text size, use the bottom tabs on your phone, or enable Reduce Motion for a still interface.</p>
+      <h3>Keep your place</h3>
+      <p>Tap after each repetition. Morning and evening progress are saved separately on your device and reset with the local date. Undo a tap or jump to the next unfinished dhikr.</p>
+      <h3>Read offline</h3>
+      <p>On iPhone, open the site in Safari, choose <strong>Share → Add to Home Screen</strong>, and open it once online. The downloadable HTML includes the font and works on its own. Saving counts in a local file depends on browser support.</p>
+    </td>
+    <td width="42%" align="center">
+      <img src="docs/phone-preview.png" width="290" alt="Phone view with Arabic morning adhkar, reading progress, repetition counter, and bottom navigation">
+    </td>
+  </tr>
+</table>
 
-[**Open Daily Adhkar**](https://adam-zs.github.io/daily-adhkar/) · [**Download the offline HTML**](https://raw.githubusercontent.com/Adam-ZS/daily-adhkar/main/adhkar.html) · [**Star on GitHub**](https://github.com/Adam-ZS/daily-adhkar)
-
-<img src="docs/phone-preview.png" alt="Daily Adhkar on a phone, showing the morning section, reading progress, a repetition counter, and bottom navigation" width="320">
-
-## What’s inside
+## What you can read
 
 | Section | Contents |
 | --- | --- |
 | أذكار الصباح | Morning adhkar with repetition counters |
-| أذكار المساء | Evening adhkar with its own daily progress |
+| أذكار المساء | Evening adhkar with separate daily progress |
 | أدعية مختارة | Selected duas from the Qur’an and Sunnah |
 | أدعية النبي ﷺ | Prophetic supplications with source notes |
 
-- **Read comfortably.** Dark mode, adjustable Arabic text, right-to-left navigation, and reduced-motion support.
-- **Pick up where you left off.** Repetition counts are saved on your device for the day. Undo a tap or jump to the next unfinished dhikr.
-- **Read offline.** Open the hosted app once while online, or save the standalone HTML. The app has no accounts, analytics, or runtime dependencies.
+Cards include references and repetition counts as applicable. The collection draws on Hisn Al-Muslim and hadith collections including Sahih al-Bukhari, Sahih Muslim, Sunan Abi Dawud, and Jamiʿ at-Tirmidhi. Both daily sections include the complete Al-Ikhlas, Al-Falaq, and An-Nas surahs.
 
-## Use it on iPhone
+## Contribute and share
 
-Open the [site](https://adam-zs.github.io/daily-adhkar/) in Safari, tap **Share**, then **Add to Home Screen**. Open it while online to prepare it for offline reading. To keep a standalone copy, save `adhkar.html` and open it in a browser. Saving counts in the standalone copy depends on the browser’s support for local-file storage.
+If you spot a problem with a text, attribution, or repetition count, [send a source correction](https://github.com/Adam-ZS/daily-adhkar/issues/new?template=content_correction.md). If you use the app, consider starring the repo so others can find it.
 
-## Sources and corrections
+[Contributing](CONTRIBUTING.md) · [Accessibility](ACCESSIBILITY.md) · [Code of Conduct](CODE_OF_CONDUCT.md) · [Security](SECURITY.md)
 
-Cards show their references and repetition counts as applicable. The collection draws on Hisn Al-Muslim and hadith collections including Sahih al-Bukhari, Sahih Muslim, Sunan Abi Dawud, and Jamiʿ at-Tirmidhi. Both daily sections include the full text of Al-Ikhlas, Al-Falaq, and An-Nas.
-
-If you find an issue with the wording, attribution, or repetition count, [send a source correction](https://github.com/Adam-ZS/daily-adhkar/issues/new?template=content_correction.md).
-
-## Contribute
-
-See [Contributing](CONTRIBUTING.md), the [Code of Conduct](CODE_OF_CONDUCT.md), the [Accessibility Statement](ACCESSIBILITY.md), and the [Security Policy](SECURITY.md). The original site code and project documentation are available under the [MIT License](LICENSE).
+The app has no accounts, analytics, or runtime dependencies. Original project code and documentation use the [MIT License](LICENSE). [Amiri Quran](https://aliftype.com/amiri/english.html) uses the [SIL Open Font License](docs/Amiri-OFL.txt).
