@@ -2,592 +2,675 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#121016">
+<meta name="description" content="أذكار الصباح والمساء وأدعية من القرآن والسنة، مع عدّاد للتكرار وحفظ للتقدّم.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
 <title>أذكاري اليومية</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'Amiri', 'Scheherazade New', 'Traditional Arabic', serif;
-    background: #0d1117;
-    color: #e8dcc8;
-    min-height: 100vh;
-    direction: rtl;
+:root {
+  color-scheme: dark;
+  --bg: #121016;
+  --surface: #1c1821;
+  --border: #38303d;
+  --text: #fbf1e7;
+  --muted: #c3b5c4;
+  --gold: #f1cd99;
+  --accent: #edc28d;
+  --glow: #57332d;
+  --reading-size: 1.65rem;
+  --ui: "Noto Sans Arabic", system-ui, sans-serif;
+  --reading: "Noto Naskh Arabic", "Geeza Pro", "Traditional Arabic", serif;
+}
+:root[data-theme="masaa"] { --accent: #d2c0ff; --glow: #342955; }
+:root[data-theme="adiya"] { --accent: #b9dec8; --glow: #233c39; }
+:root[data-theme="nabi"] { --accent: #edbccc; --glow: #483044; }
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: env(safe-area-inset-top, 0px) env(safe-area-inset-right, 0px) env(safe-area-inset-bottom, 0px) env(safe-area-inset-left, 0px);
+  color: var(--text);
+  background: radial-gradient(ellipse 700px 430px at 55% 5%, #241b2a, transparent), var(--bg);
+  font: 1rem/1.65 var(--ui);
+  -webkit-text-size-adjust: 100%;
+}
+button { color: inherit; font: inherit; cursor: pointer; touch-action: manipulation; }
+button:disabled, button[aria-disabled="true"] { cursor: default; }
+button:focus-visible, a:focus-visible, summary:focus-visible, [role="tabpanel"]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+a { color: var(--accent); text-underline-offset: .2em; }
+h1, h2, p { margin: 0; }
+.shell { width: min(100% - 3rem, 64rem); margin-inline: auto; }
+.topbar {
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .65rem;
+}
+.brand { display: flex; align-items: center; gap: .7rem; }
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 43px;
+  height: 43px;
+  flex: none;
+  border: 1px solid #705743;
+  border-radius: 14px;
+  color: var(--gold);
+  background: #2b2028;
+  font-size: 1.4rem;
+}
+.brand h1 { font-size: 1.02rem; font-weight: 750; }
+.brand p { color: var(--muted); font-size: .8rem; }
+.text-controls { display: flex; border: 1px solid var(--border); border-radius: 14px; background: var(--surface); }
+.text-controls button {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 .45rem;
+  border: 0;
+  background: transparent;
+}
+.text-controls button + button { border-inline-start: 1px solid var(--border); }
+.text-controls button:disabled { color: #9e8e9e; }
+.navigation { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 3; padding-block: .25rem .5rem; }
+.tabs {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+  padding: 5px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: #1d1822;
+  box-shadow: 0 8px 22px #08060b55;
+}
+.tab-marker {
+  position: absolute;
+  inset-block: 5px;
+  inset-inline-start: 5px;
+  width: calc((100% - 22px) / 4);
+  z-index: -1;
+  border-radius: 12px;
+  border: 1px solid #ffffff20;
+  background: var(--glow);
+  transform: translateX(calc(var(--tab, 0) * (-100% - 4px)));
+  transition: transform .32s cubic-bezier(.22,.8,.3,1), background .25s;
+}
+:root:not(.enhanced) .tab-marker { display: none; }
+.tab-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  min-height: 49px;
+  padding: .3rem .15rem;
+  border: 0;
+  border-radius: 12px;
+  color: var(--muted);
+  text-align: center;
+  text-decoration: none;
+  font-size: .94rem;
+  font-weight: 650;
+  transition: color .2s;
+}
+.tab-btn[aria-selected="true"], .tab-btn:hover { color: var(--accent); }
+.tab-icon { font: 1.35rem/1 system-ui, sans-serif; }
+.tab-content { scroll-margin-top: 80px; }
+main { padding-block: .65rem 3.5rem; }
+.enhanced .tab-content { animation: arrive .4s both; }
+@keyframes arrive { from { opacity: 0; transform: translateY(8px); } }
+.section-title {
+  min-height: 250px;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  border: 1px solid #ffffff23;
+  border-radius: 27px;
+  padding: clamp(1.15rem, 4vw, 3rem);
+  background: radial-gradient(ellipse at 12% 35%, var(--glow), transparent 75%), linear-gradient(110deg, #18131e, #271c28);
+}
+.section-title::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: repeating-linear-gradient(45deg, transparent 0 25px, #fff 26px, transparent 27px),
+              repeating-linear-gradient(-45deg, transparent 0 25px, #fff 26px, transparent 27px);
+  opacity: .055;
+}
+.hero-copy { position: relative; z-index: 1; max-width: 65%; }
+.hero-label { color: var(--accent); font-size: .88rem; font-weight: 650; }
+.section-title h2 { font: 700 clamp(2.2rem, 6vw, 4.45rem)/1.3 var(--reading); margin-block: .25em .15em; }
+.section-title p { color: #dfd0dc; font-size: clamp(.88rem, 2vw, 1rem); }
+.ornament {
+  position: absolute;
+  z-index: -1;
+  inset-inline-end: 7%;
+  top: 50%;
+  width: clamp(8rem, 25vw, 13rem);
+  aspect-ratio: 1;
+  transform: translateY(-50%);
+  color: var(--accent);
+}
+.ornament::before, .ornament::after {
+  content: "";
+  position: absolute;
+  inset: 5%;
+  border: 1px solid currentColor;
+  border-radius: 23%;
+  opacity: .34;
+}
+.ornament::before { transform: rotate(45deg); }
+.ornament::after { inset: 12%; }
+.orb {
+  position: absolute;
+  inset: 18%;
+  display: grid;
+  place-items: center;
+  border: 1px solid #ffffff28;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--glow), #221b2b);
+  box-shadow: 0 0 44px #f5c68f20;
+  font: clamp(2.8rem, 8vw, 5rem)/1 system-ui, sans-serif;
+}
+.orb span { animation: drift 4s ease-in-out; }
+.spark { position: absolute; color: var(--accent); font-size: .85rem; animation: drift 4s ease-in-out; }
+.spark:first-of-type { top: 5%; right: 5%; }
+.spark:last-of-type { bottom: 5%; left: 5%; animation-delay: -2s; }
+@keyframes drift { 50% { transform: translateY(-5px); } }
+.reading { width: min(100%, 47rem); margin: 0 auto; }
+.progress {
+  margin-block: 1.2rem 1rem;
+  padding: .75rem 1rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+}
+.progress-header { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+.progress-heading { font-size: .95rem; font-weight: 700; }
+.progress-value { color: var(--accent); font-size: .86rem; }
+.progress-track { overflow: hidden; height: 5px; border-radius: 8px; background: #3a303e; }
+.progress-fill { height: 100%; background: var(--accent); transform: scaleX(0); transform-origin: right; transition: transform .32s ease; }
+.progress-actions { display: flex; justify-content: space-between; flex-wrap: wrap; margin-block-start: .3rem; }
+.quiet { min-height: 44px; padding: .15em .55em; border: 0; background: transparent; color: var(--muted); border-radius: 8px; font-size: .85rem; }
+.quiet:hover { color: var(--accent); background: #ffffff09; }
+.quiet[aria-disabled="true"], .quiet:disabled { opacity: .65; }
+.bismillah { margin-block: 1.4rem 1rem; color: var(--accent); text-align: center; font: 1.55rem/1.5 var(--reading); }
+.dhikr-card, .dua-card {
+  margin-block: .85rem;
+  padding: clamp(1rem, 3vw, 1.65rem);
+  background: linear-gradient(155deg, #231e28, var(--surface) 60%);
+  border: 1px solid var(--border);
+  border-radius: 21px;
+  transition: border-color .25s;
+  scroll-margin-top: 90px;
+}
+.dhikr-card[data-complete] { border-color: #526d60; }
+.card-meta { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: .4rem; }
+.card-title, .dua-label { color: var(--accent); font-size: .9rem; font-weight: 700; }
+.dhikr-repeat { color: var(--muted); border: 1px solid #4a3d4d; border-radius: 20px; padding: .12rem .65rem; font-size: .8rem; }
+.dhikr-text, .dua-text {
+  margin-block: .9rem;
+  text-align: center;
+  font: var(--reading-size)/1.95 var(--reading);
+  overflow-wrap: anywhere;
+}
+.dhikr-source, .dua-source { color: var(--muted); font-size: .88rem; line-height: 1.75; }
+.card-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: .6rem 1rem;
+  padding-block-start: .7rem;
+  border-block-start: 1px solid var(--border);
+}
+.card-footer .dhikr-source { flex: 1 1 14rem; }
+.dua-source { padding-block-start: .7rem; border-block-start: 1px solid var(--border); }
+.actions { display: flex; align-items: center; gap: .35rem; margin-inline-start: auto; }
+.count {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .7rem;
+  min-height: 46px;
+  min-width: 9rem;
+  padding: .3rem .7rem;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #1d1420;
+  font-size: .9rem;
+  font-weight: 750;
+  transition: transform .15s, background .2s;
+}
+.count:active:not([aria-disabled="true"]) { transform: scale(.96); }
+.count[aria-disabled="true"] { color: #d5f1e0; background: #2e473c; border-color: #526d60; }
+.count bdi { font-variant-numeric: tabular-nums; }
+.surah { margin-block: 1rem; }
+.surah-title { display: block; font: 700 .88rem/1.6 var(--ui); margin-block-end: .3rem; }
+.verse-end { color: var(--accent); white-space: nowrap; }
+.dua-card:first-child { margin-top: 1.2rem; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: 640px) {
+  html.enhanced { scroll-padding-bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
+  .shell { width: calc(100% - 1.5rem); }
+  .topbar { min-height: 68px; }
+  .brand-mark { width: 39px; height: 39px; }
+  .enhanced .navigation {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    inset-inline: 0;
+    padding: 6px max(8px, env(safe-area-inset-right, 0px)) calc(6px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px));
+    background: linear-gradient(transparent, var(--bg) 20%);
   }
-
-  /* Header */
-  .header {
-    background: linear-gradient(135deg, #1a2a1a 0%, #0f1f0f 100%);
-    border-bottom: 2px solid #2d5a27;
-    padding: 20px 16px 14px;
-    text-align: center;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-  }
-
-  .header h1 {
-    font-size: 1.6rem;
-    color: #c9a84c;
-    letter-spacing: 1px;
-    margin-bottom: 4px;
-    text-shadow: 0 2px 8px rgba(201,168,76,0.3);
-  }
-
-  .header p {
-    font-size: 0.75rem;
-    color: #7a9e70;
-    letter-spacing: 2px;
-  }
-
-  /* Tabs */
-  .tabs-wrapper {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    background: #111a11;
-    border-bottom: 1px solid #1e3a1e;
-    position: sticky;
-    top: 82px;
-    z-index: 99;
-  }
-  .tabs-wrapper::-webkit-scrollbar { display: none; }
-
-  .tabs {
-    display: flex;
-    min-width: max-content;
-    padding: 0 8px;
-  }
-
-  .tab-btn {
-    padding: 14px 18px;
-    border: none;
-    background: transparent;
-    color: #6b8c65;
-    font-size: 0.88rem;
-    font-family: inherit;
-    cursor: pointer;
-    white-space: nowrap;
-    border-bottom: 3px solid transparent;
-    transition: all 0.2s ease;
-    letter-spacing: 0.5px;
-  }
-
-  .tab-btn:hover { color: #a8c9a0; }
-
-  .tab-btn.active {
-    color: #c9a84c;
-    border-bottom-color: #c9a84c;
-    background: rgba(201,168,76,0.05);
-  }
-
-  /* Content */
-  .tab-content { display: none; padding: 20px 16px 80px; max-width: 680px; margin: 0 auto; }
-  .tab-content.active { display: block; }
-
-  /* Section title */
-  .section-title {
-    text-align: center;
-    margin-bottom: 24px;
-    padding-bottom: 14px;
-    border-bottom: 1px solid #1e3a1e;
-  }
-  .section-title h2 {
-    font-size: 1.4rem;
-    color: #c9a84c;
-    margin-bottom: 6px;
-  }
-  .section-title p {
-    font-size: 0.78rem;
-    color: #5a7855;
-  }
-
-  /* Dhikr card */
-  .dhikr-card {
-    background: linear-gradient(135deg, #131f13 0%, #111711 100%);
-    border: 1px solid #1e3a1e;
-    border-right: 3px solid #2d5a27;
-    border-radius: 12px;
-    padding: 20px 18px;
-    margin-bottom: 14px;
-    position: relative;
-    transition: border-color 0.2s;
-  }
-
-  .dhikr-card:hover { border-right-color: #c9a84c; }
-
-  .card-number {
-    position: absolute;
-    top: -10px;
-    left: 14px;
-    background: #2d5a27;
-    color: #a8c9a0;
-    font-size: 0.65rem;
-    padding: 2px 10px;
-    border-radius: 20px;
-  }
-
-  .dhikr-text {
-    font-size: 1.25rem;
-    line-height: 2.2;
-    color: #e8dcc8;
-    text-align: center;
-    margin-bottom: 12px;
-  }
-
-  .dhikr-repeat {
-    display: inline-block;
-    background: rgba(201,168,76,0.12);
-    color: #c9a84c;
-    font-size: 0.7rem;
-    padding: 3px 12px;
-    border-radius: 20px;
-    border: 1px solid rgba(201,168,76,0.25);
-    margin-top: 4px;
-  }
-
-  .dhikr-source {
-    font-size: 0.68rem;
-    color: #4a6a45;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid #1e3a1e;
-    text-align: left;
-    direction: rtl;
-  }
-
-  /* Dua card (special) */
-  .dua-card {
-    background: linear-gradient(135deg, #1a1810 0%, #141210 100%);
-    border: 1px solid #2e2a18;
-    border-right: 3px solid #c9a84c;
-    border-radius: 12px;
-    padding: 22px 18px;
-    margin-bottom: 14px;
-  }
-
-  .dua-label {
-    font-size: 0.7rem;
-    color: #c9a84c;
-    letter-spacing: 1px;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .dua-label::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: rgba(201,168,76,0.2);
-  }
-
-  .dua-text {
-    font-size: 1.2rem;
-    line-height: 2.3;
-    color: #e8dcc8;
-    text-align: center;
-  }
-
-  .dua-source {
-    font-size: 0.68rem;
-    color: #7a6a35;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid #2e2a18;
-    text-align: center;
-  }
-
-  /* Divider */
-  .divider {
-    text-align: center;
-    margin: 24px 0 18px;
-    color: #2d5a27;
-    font-size: 1.2rem;
-    letter-spacing: 8px;
-  }
-
-  /* Bismillah */
-  .bismillah {
-    text-align: center;
-    font-size: 1.5rem;
-    color: #c9a84c;
-    margin-bottom: 24px;
-    padding: 16px;
-    background: rgba(201,168,76,0.05);
-    border-radius: 10px;
-    border: 1px solid rgba(201,168,76,0.15);
-    line-height: 2;
-  }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: #0d1117; }
-  ::-webkit-scrollbar-thumb { background: #2d5a27; border-radius: 4px; }
-
-  /* iPhone safe area */
-  @supports (padding-bottom: env(safe-area-inset-bottom)) {
-    .tab-content { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
-  }
-
-  @media (min-width: 640px) {
-    .dhikr-text { font-size: 1.35rem; }
-    .dua-text { font-size: 1.3rem; }
-    .header h1 { font-size: 1.9rem; }
-  }
+  .enhanced .tabs { width: 100%; }
+  .tab-btn { flex-direction: column; gap: 4px; min-height: 53px; font-size: .83rem; line-height: 1.2; }
+  main { padding-block: .25rem 5.5rem; }
+  .section-title { min-height: 180px; border-radius: 21px; }
+  .ornament { inset-inline-end: 5%; width: clamp(6.5rem, 29vw, 11rem); }
+  .hero-copy { max-width: 69%; }
+  .dhikr-card, .dua-card { scroll-margin-top: 14px; }
+  .card-footer .dhikr-source { flex-basis: 100%; }
+}
+@media (max-width: 350px) {
+  .hero-copy { max-width: 75%; }
+  .ornament { inset-inline-end: 2%; opacity: .64; }
+  .tab-btn { font-size: .76rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
 </style>
 </head>
 <body>
-
-<div class="header">
-  <h1>أذكاري اليومية</h1>
-  <p>· حصن المسلم ·</p>
-</div>
-
-<div class="tabs-wrapper">
-  <div class="tabs">
-    <button class="tab-btn active" onclick="showTab('sabah')">🌅 أذكار الصباح</button>
-    <button class="tab-btn" onclick="showTab('masaa')">🌙 أذكار المساء</button>
-    <button class="tab-btn" onclick="showTab('adiya')">🤲 أدعية</button>
-    <button class="tab-btn" onclick="showTab('nabi')">✨ أدعية النبي ﷺ</button>
+<header class="topbar shell">
+  <div class="brand">
+    <span class="brand-mark" aria-hidden="true">✦</span>
+    <div><h1>أذكاري اليومية</h1><p lang="en">Daily Adhkar</p></div>
   </div>
-</div>
-
-<!-- ===================== SABAH ===================== -->
-<div id="sabah" class="tab-content active">
-  <div class="section-title">
-    <h2>🌅 أذكار الصباح</h2>
-    <p>تُقال من بعد صلاة الفجر إلى طلوع الشمس</p>
+  <div class="text-controls" role="group" aria-label="حجم نص القراءة" hidden>
+    <button type="button" data-size="-1" aria-label="تصغير النص">أ−</button>
+    <button type="button" data-size="1" aria-label="تكبير النص">أ+</button>
   </div>
-
-  <div class="bismillah">بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيمِ</div>
-
-  <div class="dhikr-card">
-    <span class="card-number">١</span>
-    <div class="dhikr-text">
-      اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا،<br>
-      وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ النُّشُورُ
+</header>
+<nav class="navigation" aria-label="أقسام الأذكار">
+  <div class="tabs shell">
+    <span class="tab-marker" aria-hidden="true"></span>
+    <a class="tab-btn" id="tab-sabah" href="#sabah"><span class="tab-icon" aria-hidden="true">☀</span>الصباح</a>
+    <a class="tab-btn" id="tab-masaa" href="#masaa"><span class="tab-icon" aria-hidden="true">☾</span>المساء</a>
+    <a class="tab-btn" id="tab-adiya" href="#adiya"><span class="tab-icon" aria-hidden="true">◇</span>الأدعية</a>
+    <a class="tab-btn" id="tab-nabi" href="#nabi"><span class="tab-icon" aria-hidden="true">✧</span>أدعية النبي</a>
+  </div>
+</nav>
+<main class="shell">
+<section id="sabah" class="tab-content">
+  <header class="section-title">
+    <div class="hero-copy">
+      <span class="hero-label">ورد الصباح</span>
+      <h2>أذكار الصباح</h2>
+      <p>تُقال من بعد صلاة الفجر إلى طلوع الشمس</p>
     </div>
-    <span class="dhikr-repeat">مرة واحدة</span>
-    <div class="dhikr-source">رواه الترمذي وهو صحيح</div>
-  </div>
-
-  <div class="dhikr-card">
-    <span class="card-number">٢</span>
-    <div class="dhikr-text">
-      أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ رَبِّ الْعَالَمِينَ،<br>
-      اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَ هَذَا الْيَوْمِ: فَتْحَهُ،<br>
-      وَنَصْرَهُ، وَنُورَهُ، وَبَرَكَتَهُ، وَهُدَاهُ،<br>
-      وَأَعُوذُ بِكَ مِنْ شَرِّ مَا فِيهِ وَشَرِّ مَا بَعْدَهُ
+    <div class="ornament" aria-hidden="true">
+      <span class="spark">✧</span><div class="orb"><span>☀</span></div><span class="spark">✦</span>
     </div>
-    <span class="dhikr-repeat">مرة واحدة</span>
-    <div class="dhikr-source">رواه أبو داود وهو صحيح</div>
-  </div>
-
-  <div class="dhikr-card">
-    <span class="card-number">٣</span>
-    <div class="dhikr-text">
-      أَصْبَحْنَا عَلَى فِطْرَةِ الْإِسْلَامِ،<br>
-      وَعَلَى كَلِمَةِ الْإِخْلَاصِ،<br>
-      وَعَلَى دِينِ نَبِيِّنَا مُحَمَّدٍ ﷺ،<br>
-      وَعَلَى مِلَّةِ أَبِينَا إِبْرَاهِيمَ، حَنِيفًا مُسْلِمًا<br>
-      وَمَا كَانَ مِنَ الْمُشْرِكِينَ
+  </header>
+  <div class="reading">
+    <div class="progress" hidden>
+      <div class="progress-header"><span class="progress-heading">تقدّم اليوم</span><span class="progress-value"></span></div>
+      <div class="progress-actions">
+        <button class="quiet resume" type="button">تابع القراءة</button>
+        <button class="quiet reset" type="button">إعادة العدّ</button>
+      </div>
+      <div class="progress-track" role="progressbar" aria-label="الأذكار المكتملة" aria-valuemin="0"><div class="progress-fill"></div></div>
     </div>
-    <span class="dhikr-repeat">مرة واحدة</span>
-    <div class="dhikr-source">رواه أحمد وهو صحيح</div>
+    <div class="bismillah">بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيمِ</div>
+    <article class="dhikr-card" data-target="1">
+      <div class="card-meta"><span class="card-title">الذكر ١</span><span class="dhikr-repeat">مرة واحدة</span></div>
+      <div class="dhikr-text">اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ النُّشُورُ</div>
+      <div class="card-footer">
+        <div class="dhikr-source">رواه الترمذي وهو صحيح</div>
+        <div class="actions" hidden>
+          <button type="button" class="quiet undo" aria-label="تراجع عن تكرار: الذكر ١">تراجع</button>
+          <button type="button" class="count"><span></span><bdi dir="rtl"></bdi></button>
+        </div>
+      </div>
+    </article>
+    <article class="dhikr-card" data-target="1">
+      <div class="card-meta"><span class="card-title">الذكر ٢</span><span class="dhikr-repeat">مرة واحدة</span></div>
+      <div class="dhikr-text">أَصْبَحْنَا وَأَصْبَحَ الْمُلْكُ لِلَّهِ رَبِّ الْعَالَمِينَ، اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَ هَذَا الْيَوْمِ: فَتْحَهُ، وَنَصْرَهُ، وَنُورَهُ، وَبَرَكَتَهُ، وَهُدَاهُ، وَأَعُوذُ بِكَ مِنْ شَرِّ مَا فِيهِ وَشَرِّ مَا بَعْدَهُ</div>
+      <div class="card-footer">
+        <div class="dhikr-source">رواه أبو داود (<a href="https://sunnah.com/abudawud:5084">٥٠٨٤</a>)، وضعّفه الألباني</div>
+        <div class="actions" hidden>
+          <button type="button" class="quiet undo" aria-label="تراجع عن تكرار: الذكر ٢">تراجع</button>
+          <button type="button" class="count"><span></span><bdi dir="rtl"></bdi></button>
+        </div>
+      </div>
+    </article>
+    <article class="dhikr-card" data-target="1">
+      <div class="card-meta"><span class="card-title">الذكر ٣</span><span class="dhikr-repeat">مرة واحدة</span></div>
+      <div class="dhikr-text">أَصْبَحْنَا عَلَى فِطْرَةِ الْإِسْلَامِ، وَعَلَى كَلِمَةِ الْإِخْلَاصِ، وَعَلَى دِينِ نَبِيِّنَا مُحَمَّدٍ ﷺ، وَعَلَى مِلَّةِ أَبِينَا إِبْرَاهِيمَ، حَنِيفًا مُسْلِمًا وَمَا كَانَ مِنَ الْمُشْرِكِينَ</div>
+      <div class="card-footer">
+        <div class="dhikr-source">رواه أحمد وهو صحيح</div>
+        <div class="actions" hidden>
+          <button type="button" class="quiet undo" aria-label="تراجع عن تكرار: الذكر ٣">تراجع</button>
+          <button type="button" class="count"><span></span><bdi dir="rtl"></bdi></button>
+        </div>
+      </div>
+    </article>
+    <article class="dhikr-card" data-target="1">
+      <div class="card-meta"><span class="card-title">الذكر ٤</span><span class="dhikr-repeat">مرة واحدة</span></div>
+      <div class="dhikr-text">اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي الدُّنْيَا وَالْآخِرَةِ، اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي دِينِي وَدُنْيَايَ وَأَهْلِي وَمَالِي، اللَّهُمَّ اسْتُرْ عَوْرَاتِي وَآمِنْ رَوْعَاتِي، اللَّهُمَّ احْفَظْنِي مِنْ بَيْنِ يَدَيَّ وَمِنْ خَلْفِي وَعَنْ يَمِينِي وَعَنْ شِمَالِي وَمِنْ فَوْقِي، وَأَعُوذُ بِعَظَمَتِكَ أَنْ أُغْتَالَ مِنْ تَحْتِي</div>
+      <div class="card-footer">
+        <div class="dhikr-source">رواه أبو داود وابن ماجه وهو صحيح</div>
+        <div class="actions" hidden>
+          <button type="button" class="quiet undo" aria-label="تراجع عن تكرار: الذكر ٤">تراجع</button>
+          <button type="button" class="count"><span></span><bdi dir="rtl"></bdi></button>
+        </div>
+      </div>
+    </article>
+    <article class="dhikr-card" data-target="3">
+      <div class="card-meta"><span class="card-title">الذكر ٥</span><span class="dhikr-repeat">ثلاث مرات (٣×)</span></div>
+      <div class="dhikr-text">بِسْمِ اللهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ</div>
+      <div class="card-footer">
+        <div class="dhikr-source">رواه أبو داود والترمذي وهو صحيح</div>
+        <div class="actions" hidden>
+          <button type="button" class="quiet undo" aria-label="تراجع عن تكرار: الذكر ٥">تراجع</button>
+          <button type="button" class="count"><span></span><bdi dir="rtl"></bdi></button>
+        </div>
+      </div>
+    </article>
+    <article class="dhikr-card" data-target="3">
+      <div class="card-meta"><span class="card-title">الذكر ٦</span><span class="dhikr-repeat">ثلاث مرات (٣×)</span></div>
+      <div class="dhikr-text">رَضِيتُ بِاللهِ رَبًّا، وَبِالْإِسْلَامِ دِينًا، وَبِمُحَمَّدٍ ﷺ نَبِيًّا</div>
+      <div class="card-footer">
+        <div class="dhikr-source">رواه أبو داود والترمذي وهو صحيح</div>
+        <div class="actions" hidden>
+          <button type="button" class="quiet undo" aria-label="تراجع عن تكرار: الذكر ٦">تراجع</button>
+          <button type="button" class="count"><span></span><bdi dir="rtl"></bdi></button>
+        </div>
+      </div>
+    </article>
+    <article class="dhikr-card" data-target="1">
+      <div class="card-meta"><span class="card-title">الذكر ٧</span><span class="dhikr-repeat">مرة واحدة</span></div>
+      <div class="dhikr-text">يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ، أَصْلِحْ لِي شَأْنِي كُلَّهُ، وَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ</div>
+      <div class="card-footer">
+        <div class="dhikr-source">رواه الحاكم وهو صحيح</div>
+        <div class="actions" hidden>
+          <button type="button" class="quiet undo" aria-label="تراجع عن تكرار: الذكر ٧">تراجع</button>
+          <button type="button" class="count"><span></span><bdi dir="rtl"></bdi></button>
+        </div>
+      </div>
+    </article>
+    <article class="dhikr-card" data-target="1">
+      <div class="card-meta"><span class="card-title">الذكر ٨</span><span class="dhikr-repeat">مرة واحدة</span></div>
+      <div class="dhikr-text">اللَّهُمَّ عَالِمَ الْغَيْبِ وَالشَّهَادَةِ، فَاطِرَ السَّمَوَاتِ وَالْأَرْضِ، رَبَّ كُلِّ شَيْءٍ وَمَلِيكَهُ، أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا أَنْتَ، أَعُوذُ بِكَ مِنْ شَرِّ نَفْسِي وَشَرِّ الشَّيْطَانِ وَشِرْكِهِ</div>
+      <div class="card-footer">
+        <div class="dhikr-source">رواه أبو داود والترمذي وهو صحيح</div>
+        <div class="actions" hidden>
+          <button type="button" class="quiet undo" aria-label="تراجع عن تكرار: الذكر ٨">تراجع</button>
+          <button type="button" class="count"><span></span><bdi dir="rtl"></bdi></button>
+        </div>
+      </div>
+    </article>
+    <article class="dhikr-card" data-target="100">
+      <div class="card-meta"><span class="card-title">الذكر ٩</span><span class="dhikr-repeat">مئة مرة (١٠٠×)</span></div>
+      <div class="dhikr-text">سُبْحَانَ اللهِ وَبِحَمْدِهِ</div>
+      <div class="card-footer">
+        <div class="dhikr-source">رواه مسلم — من قالها مئة مرة حين يصبح لم يأتِ أحد بأفضل مما جاء به</div>
+        <div class="actions" hidden>
+          <button type="button" class="quiet undo" aria-label="تراجع عن تكرار: الذكر ٩">تراجع</button>
+          <button type="button" class="count"><span></span><bdi dir="rtl"></bdi></button>
+        </div>
+      </div>
+    </article>
+    <article class="dhikr-card" data-target="10">
+      <div class="card-meta"><span class="card-title">الذكر ١٠</span><span class="dhikr-repeat">عشر مرات (١٠×)</span></div>
+      <div class="dhikr-text">لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ</div>
+      <div class="card-footer">
+        <div class="dhikr-source">رواه الترمذي وهو صحيح</div>
+        <div class="actions" hidden>
+          <button type="button" class="quiet undo" aria-label="تراجع عن تكرار: الذكر ١٠">تراجع</button>
+          <button type="button" class="count"><span></span><bdi dir="rtl"></bdi></button>
+        </div>
+      </div>
+    </article>
+    <article class="dhikr-card" data-target="7">
+      <div class="card-meta"><span class="card-title">الذكر ١١</span><span class="dhikr-repeat">سبع مرات (٧×)</span></div>
+      <div class="dhikr-text">حَسْبِيَ اللهُ لَا إِلَهَ إِلَّا هُوَ عَلَيْهِ تَوَكَّلْتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ</div>
+      <div class="card-footer">
+        <div class="dhikr-source">رواه أبو داود وهو صحيح — كفاه الله ما أهمه من أمر الدنيا والآخرة</div>
+        <div class="actions" hidden>
+          <button type="button" class="quiet undo" aria-label="تراجع عن تكرار: الذكر ١١">تراجع</button>
+          <button type="button" class="count"><span></span><bdi dir="rtl"></bdi></button>
+        </div>
+      </div>
+    </article>
+    <article class="dhikr-card" data-target="4">
+      <div class="card-meta"><span class="card-title">الذكر ١٢</span><span class="dhikr-repeat">أربع مرات (٤×)</span></div>
+      <div class="dhikr-text">اللَّهُمَّ إِنِّي أَصْبَحْتُ أُشْهِدُكَ، وَأُشْهِدُ حَمَلَةَ عَرْشِكَ، وَمَلَائِكَتَكَ، وَجَمِيعَ خَلْقِكَ: أَنَّكَ أَنْتَ اللهُ لَا إِلَهَ إِلَّا أَنْتَ، وَحْدَكَ لَا شَرِيكَ لَكَ، وَأَنَّ مُحَمَّدًا عَبْدُكَ وَرَسُولُكَ</div>
+      <div class="card-footer">
+        <div class="dhikr-source">رواه أبو داود وهو حسن</div>
+        <div class="actions" hidden>
+          <button type="button" class="quiet undo" aria-label="تراجع عن تكرار: الذكر ١٢">تراجع</button>
+          <button type="button" class="count"><span></span><bdi dir="rtl"></bdi></button>
+        </div>
+      </div>
+    </article>
+    <article class="dhikr-card" data-target="3">
+      <div class="card-meta"><span class="card-title">الإخلاص والمعوّذتان</span><span class="dhikr-repeat">ثلاث مرات لكل سورة (٣×)</span></div>
+      <div class="dhikr-text"><div class="surah"><a class="surah-title" href="https://quran.com/112">سورة الإخلاص</a>قُلْ هُوَ اللَّهُ أَحَدٌ <span class="verse-end">﴿١﴾</span> اللَّهُ الصَّمَدُ <span class="verse-end">﴿٢﴾</span> لَمْ يَلِدْ وَلَمْ يُولَدْ <span class="verse-end">﴿٣﴾</span> وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ <span class="verse-end">﴿٤﴾</span></div>
+      <div class="surah"><a class="surah-title" href="https://quran.com/113">سورة الفلق</a>قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ <span class="verse-end">﴿١﴾</span> مِنْ شَرِّ مَا خَلَقَ <span class="verse-end">﴿٢﴾</span> وَمِنْ شَرِّ غَاسِقٍ إِذَا وَقَبَ <span class="verse-end">﴿٣﴾</span> وَمِنْ شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ <span class="verse-end">﴿٤﴾</span> وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ <span class="verse-end">﴿٥﴾</span></div>
+      <div class="surah"><a class="surah-title" href="https://quran.com/114">سورة الناس</a>قُلْ أَعُوذُ بِرَبِّ النَّاسِ <span class="verse-end">﴿١﴾</span> مَلِكِ النَّاسِ <span class="verse-end">﴿٢﴾</span> إِلَٰهِ النَّاسِ <span class="verse-end">﴿٣﴾</span> مِنْ شَرِّ الْوَسْوَاسِ الْخَنَّاسِ <span class="verse-end">﴿٤﴾</span> الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ <span class="verse-end">﴿٥﴾</span> مِنَ الْجِنَّةِ وَالنَّاسِ <span class="verse-end">﴿٦﴾</span></div></div>
+      <div class="card-footer">
+        <div class="dhikr-source">رواه أبو داود (<a href="https://sunnah.com/abudawud:5082">٥٠٨٢</a>)، وحسّنه الألباني</div>
+        <div class="actions" hidden>
+          <button type="button" class="quiet undo" aria-label="تراجع عن تكرار: الإخلاص والمعوّذتان">تراجع</button>
+          <button type="button" class="count"><span></span><bdi dir="rtl"></bdi></button>
+        </div>
+      </div>
+    </article>
+    <article class="dhikr-card" data-target="1">
+      <div class="card-meta"><span class="card-title">آية الكرسي</span><span class="dhikr-repeat">مرة واحدة — البقرة: ٢٥٥</span></div>
+      <div class="dhikr-text"> اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ</div>
+      <div class="card-footer">
+        <div class="dhikr-source">رواه النسائي وهو صحيح — من قرأها في الصباح كان في حفظ الله حتى المساء</div>
+        <div class="actions" hidden>
+          <button type="button" class="quiet undo" aria-label="تراجع عن تكرار: آية الكرسي">تراجع</button>
+          <button type="button" class="count"><span></span><bdi dir="rtl"></bdi></button>
+        </div>
+      </div>
+    </article>
   </div>
+</section>
 
-  <div class="dhikr-card">
-    <span class="card-number">٤</span>
-    <div class="dhikr-text">
-      اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي الدُّنْيَا وَالْآخِرَةِ،<br>
-      اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي دِينِي وَدُنْيَايَ<br>
-      وَأَهْلِي وَمَالِي، اللَّهُمَّ اسْتُرْ عَوْرَاتِي وَآمِنْ رَوْعَاتِي،<br>
-      اللَّهُمَّ احْفَظْنِي مِنْ بَيْنِ يَدَيَّ وَمِنْ خَلْفِي<br>
-      وَعَنْ يَمِينِي وَعَنْ شِمَالِي وَمِنْ فَوْقِي،<br>
-      وَأَعُوذُ بِعَظَمَتِكَ أَنْ أُغْتَالَ مِنْ تَحْتِي
+<section id="masaa" class="tab-content">
+  <header class="section-title">
+    <div class="hero-copy">
+      <span class="hero-label">ورد المساء</span>
+      <h2>أذكار المساء</h2>
+      <p>تُقال من بعد صلاة العصر إلى غروب الشمس</p>
     </div>
-    <span class="dhikr-repeat">مرة واحدة</span>
-    <div class="dhikr-source">رواه أبو داود وابن ماجه وهو صحيح</div>
-  </div>
-
-  <div class="dhikr-card">
-    <span class="card-number">٥</span>
-    <div class="dhikr-text">
-      بِسْمِ اللهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ<br>
-      فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ
+    <div class="ornament" aria-hidden="true">
+      <span class="spark">✧</span><div class="orb"><span>☾</span></div><span class="spark">✦</span>
     </div>
-    <span class="dhikr-repeat">ثلاث مرات (٣×)</span>
-    <div class="dhikr-source">رواه أبو داود والترمذي وهو صحيح</div>
-  </div>
-
-  <div class="dhikr-card">
-    <span class="card-number">٦</span>
-    <div class="dhikr-text">
-      رَضِيتُ بِاللهِ رَبًّا، وَبِالْإِسْلَامِ دِينًا،<br>
-      وَبِمُحَمَّدٍ ﷺ نَبِيًّا
+  </header>
+  <div class="reading">
+    <div class="progress" hidden>
+      <div class="progress-header"><span class="progress-heading">تقدّم اليوم</span><span class="progress-value"></span></div>
+      <div class="progress-actions">
+        <button class="quiet resume" type="button">تابع القراءة</button>
+        <button class="quiet reset" type="button">إعادة العدّ</button>
+      </div>
+      <div class="progress-track" role="progressbar" aria-label="الأذكار المكتملة" aria-valuemin="0"><div class="progress-fill"></div></div>
     </div>
-    <span class="dhikr-repeat">ثلاث مرات (٣×)</span>
-    <div class="dhikr-source">رواه أبو داود والترمذي وهو صحيح</div>
+    <div class="bismillah">بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيمِ</div>
+    <article class="dhikr-card" data-target="1">
+      <div class="card-meta"><span class="card-title">الذكر ١</span><span class="dhikr-repeat">مرة واحدة</span></div>
+      <div class="dhikr-text">اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ الْمَصِيرُ</div>
+      <div class="card-footer">
+        <div class="dhikr-source">رواه الترمذي وهو صحيح</div>
+        <div class="actions" hidden>
+          <button type="button" class="quiet undo" aria-label="تراجع عن تكرار: الذكر ١">تراجع</button>
+          <button type="button" class="count"><span></span><bdi dir="rtl"></bdi></button>
+        </div>
+      </div>
+    </article>
+    <article class="dhikr-card" data-target="1">
+      <div class="card-meta"><span class="card-title">الذكر ٢</span><span class="dhikr-repeat">مرة واحدة</span></div>
+      <div class="dhikr-text">أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ رَبِّ الْعَالَمِينَ، اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَ هَذِهِ اللَّيْلَةِ، فَتْحَهَا وَنَصْرَهَا وَنُورَهَا وَبَرَكَتَهَا وَهُدَاهَا، وَأَعُوذُ بِكَ مِنْ شَرِّ مَا فِيهَا وَشَرِّ مَا بَعْدَهَا</div>
+      <div class="card-footer">
+        <div class="dhikr-source">رواه أبو داود (<a href="https://sunnah.com/abudawud:5084">٥٠٨٤</a>)، وضعّفه الألباني</div>
+        <div class="actions" hidden>
+          <button type="button" class="quiet undo" aria-label="تراجع عن تكرار: الذكر ٢">تراجع</button>
+          <button type="button" class="count"><span></span><bdi dir="rtl"></bdi></button>
+        </div>
+      </div>
+    </article>
+    <article class="dhikr-card" data-target="1">
+      <div class="card-meta"><span class="card-title">الذكر ٣</span><span class="dhikr-repeat">مرة واحدة</span></div>
+      <div class="dhikr-text">اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي الدُّنْيَا وَالْآخِرَةِ، اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي دِينِي وَدُنْيَايَ وَأَهْلِي وَمَالِي، اللَّهُمَّ اسْتُرْ عَوْرَاتِي وَآمِنْ رَوْعَاتِي، اللَّهُمَّ احْفَظْنِي مِنْ بَيْنِ يَدَيَّ وَمِنْ خَلْفِي وَعَنْ يَمِينِي وَعَنْ شِمَالِي وَمِنْ فَوْقِي، وَأَعُوذُ بِعَظَمَتِكَ أَنْ أُغْتَالَ مِنْ تَحْتِي</div>
+      <div class="card-footer">
+        <div class="dhikr-source">رواه أبو داود وابن ماجه وهو صحيح</div>
+        <div class="actions" hidden>
+          <button type="button" class="quiet undo" aria-label="تراجع عن تكرار: الذكر ٣">تراجع</button>
+          <button type="button" class="count"><span></span><bdi dir="rtl"></bdi></button>
+        </div>
+      </div>
+    </article>
+    <article class="dhikr-card" data-target="3">
+      <div class="card-meta"><span class="card-title">الذكر ٤</span><span class="dhikr-repeat">ثلاث مرات (٣×)</span></div>
+      <div class="dhikr-text">بِسْمِ اللهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ</div>
+      <div class="card-footer">
+        <div class="dhikr-source">رواه أبو داود والترمذي وهو صحيح</div>
+        <div class="actions" hidden>
+          <button type="button" class="quiet undo" aria-label="تراجع عن تكرار: الذكر ٤">تراجع</button>
+          <button type="button" class="count"><span></span><bdi dir="rtl"></bdi></button>
+        </div>
+      </div>
+    </article>
+    <article class="dhikr-card" data-target="3">
+      <div class="card-meta"><span class="card-title">الذكر ٥</span><span class="dhikr-repeat">ثلاث مرات (٣×)</span></div>
+      <div class="dhikr-text">أَعُوذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ</div>
+      <div class="card-footer">
+        <div class="dhikr-source">رواه مسلم — من قالها لم يضره شيء</div>
+        <div class="actions" hidden>
+          <button type="button" class="quiet undo" aria-label="تراجع عن تكرار: الذكر ٥">تراجع</button>
+          <button type="button" class="count"><span></span><bdi dir="rtl"></bdi></button>
+        </div>
+      </div>
+    </article>
+    <article class="dhikr-card" data-target="1">
+      <div class="card-meta"><span class="card-title">الذكر ٦</span><span class="dhikr-repeat">مرة واحدة</span></div>
+      <div class="dhikr-text">اللَّهُمَّ عَالِمَ الْغَيْبِ وَالشَّهَادَةِ، فَاطِرَ السَّمَوَاتِ وَالْأَرْضِ، رَبَّ كُلِّ شَيْءٍ وَمَلِيكَهُ، أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا أَنْتَ، أَعُوذُ بِكَ مِنْ شَرِّ نَفْسِي وَشَرِّ الشَّيْطَانِ وَشِرْكِهِ</div>
+      <div class="card-footer">
+        <div class="dhikr-source">رواه أبو داود والترمذي وهو صحيح</div>
+        <div class="actions" hidden>
+          <button type="button" class="quiet undo" aria-label="تراجع عن تكرار: الذكر ٦">تراجع</button>
+          <button type="button" class="count"><span></span><bdi dir="rtl"></bdi></button>
+        </div>
+      </div>
+    </article>
+    <article class="dhikr-card" data-target="100">
+      <div class="card-meta"><span class="card-title">الذكر ٧</span><span class="dhikr-repeat">مئة مرة (١٠٠×)</span></div>
+      <div class="dhikr-text">سُبْحَانَ اللهِ وَبِحَمْدِهِ</div>
+      <div class="card-footer">
+        <div class="dhikr-source">رواه مسلم</div>
+        <div class="actions" hidden>
+          <button type="button" class="quiet undo" aria-label="تراجع عن تكرار: الذكر ٧">تراجع</button>
+          <button type="button" class="count"><span></span><bdi dir="rtl"></bdi></button>
+        </div>
+      </div>
+    </article>
+    <article class="dhikr-card" data-target="10">
+      <div class="card-meta"><span class="card-title">الذكر ٨</span><span class="dhikr-repeat">عشر مرات (١٠×)</span></div>
+      <div class="dhikr-text">لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ، وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ</div>
+      <div class="card-footer">
+        <div class="dhikr-source">رواه الترمذي وهو صحيح</div>
+        <div class="actions" hidden>
+          <button type="button" class="quiet undo" aria-label="تراجع عن تكرار: الذكر ٨">تراجع</button>
+          <button type="button" class="count"><span></span><bdi dir="rtl"></bdi></button>
+        </div>
+      </div>
+    </article>
+    <article class="dhikr-card" data-target="7">
+      <div class="card-meta"><span class="card-title">الذكر ٩</span><span class="dhikr-repeat">سبع مرات (٧×)</span></div>
+      <div class="dhikr-text">حَسْبِيَ اللهُ لَا إِلَهَ إِلَّا هُوَ عَلَيْهِ تَوَكَّلْتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ</div>
+      <div class="card-footer">
+        <div class="dhikr-source">رواه أبو داود وهو صحيح</div>
+        <div class="actions" hidden>
+          <button type="button" class="quiet undo" aria-label="تراجع عن تكرار: الذكر ٩">تراجع</button>
+          <button type="button" class="count"><span></span><bdi dir="rtl"></bdi></button>
+        </div>
+      </div>
+    </article>
+    <article class="dhikr-card" data-target="1">
+      <div class="card-meta"><span class="card-title">الذكر ١٠</span><span class="dhikr-repeat">مرة واحدة</span></div>
+      <div class="dhikr-text">يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ، أَصْلِحْ لِي شَأْنِي كُلَّهُ، وَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ</div>
+      <div class="card-footer">
+        <div class="dhikr-source">رواه الحاكم وهو صحيح</div>
+        <div class="actions" hidden>
+          <button type="button" class="quiet undo" aria-label="تراجع عن تكرار: الذكر ١٠">تراجع</button>
+          <button type="button" class="count"><span></span><bdi dir="rtl"></bdi></button>
+        </div>
+      </div>
+    </article>
+    <article class="dhikr-card" data-target="3">
+      <div class="card-meta"><span class="card-title">الإخلاص والمعوّذتان</span><span class="dhikr-repeat">ثلاث مرات لكل سورة (٣×)</span></div>
+      <div class="dhikr-text"><div class="surah"><a class="surah-title" href="https://quran.com/112">سورة الإخلاص</a>قُلْ هُوَ اللَّهُ أَحَدٌ <span class="verse-end">﴿١﴾</span> اللَّهُ الصَّمَدُ <span class="verse-end">﴿٢﴾</span> لَمْ يَلِدْ وَلَمْ يُولَدْ <span class="verse-end">﴿٣﴾</span> وَلَمْ يَكُنْ لَهُ كُفُوًا أَحَدٌ <span class="verse-end">﴿٤﴾</span></div>
+      <div class="surah"><a class="surah-title" href="https://quran.com/113">سورة الفلق</a>قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ <span class="verse-end">﴿١﴾</span> مِنْ شَرِّ مَا خَلَقَ <span class="verse-end">﴿٢﴾</span> وَمِنْ شَرِّ غَاسِقٍ إِذَا وَقَبَ <span class="verse-end">﴿٣﴾</span> وَمِنْ شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ <span class="verse-end">﴿٤﴾</span> وَمِنْ شَرِّ حَاسِدٍ إِذَا حَسَدَ <span class="verse-end">﴿٥﴾</span></div>
+      <div class="surah"><a class="surah-title" href="https://quran.com/114">سورة الناس</a>قُلْ أَعُوذُ بِرَبِّ النَّاسِ <span class="verse-end">﴿١﴾</span> مَلِكِ النَّاسِ <span class="verse-end">﴿٢﴾</span> إِلَٰهِ النَّاسِ <span class="verse-end">﴿٣﴾</span> مِنْ شَرِّ الْوَسْوَاسِ الْخَنَّاسِ <span class="verse-end">﴿٤﴾</span> الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ <span class="verse-end">﴿٥﴾</span> مِنَ الْجِنَّةِ وَالنَّاسِ <span class="verse-end">﴿٦﴾</span></div></div>
+      <div class="card-footer">
+        <div class="dhikr-source">رواه أبو داود (<a href="https://sunnah.com/abudawud:5082">٥٠٨٢</a>)، وحسّنه الألباني</div>
+        <div class="actions" hidden>
+          <button type="button" class="quiet undo" aria-label="تراجع عن تكرار: الإخلاص والمعوّذتان">تراجع</button>
+          <button type="button" class="count"><span></span><bdi dir="rtl"></bdi></button>
+        </div>
+      </div>
+    </article>
+    <article class="dhikr-card" data-target="1">
+      <div class="card-meta"><span class="card-title">آية الكرسي</span><span class="dhikr-repeat">مرة واحدة — البقرة: ٢٥٥</span></div>
+      <div class="dhikr-text"> اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ ۚ يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ وَهُوَ الْعَلِيُّ الْعَظِيمُ</div>
+      <div class="card-footer">
+        <div class="dhikr-source">رواه النسائي وهو صحيح</div>
+        <div class="actions" hidden>
+          <button type="button" class="quiet undo" aria-label="تراجع عن تكرار: آية الكرسي">تراجع</button>
+          <button type="button" class="count"><span></span><bdi dir="rtl"></bdi></button>
+        </div>
+      </div>
+    </article>
   </div>
+</section>
 
-  <div class="dhikr-card">
-    <span class="card-number">٧</span>
-    <div class="dhikr-text">
-      يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ،<br>
-      أَصْلِحْ لِي شَأْنِي كُلَّهُ،<br>
-      وَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ
+<section id="adiya" class="tab-content">
+  <header class="section-title">
+    <div class="hero-copy">
+      <span class="hero-label">من القرآن والسنة</span>
+      <h2>أدعية مختارة</h2>
+      <p>أدعية جامعة من القرآن والسنة</p>
     </div>
-    <span class="dhikr-repeat">مرة واحدة</span>
-    <div class="dhikr-source">رواه الحاكم وهو صحيح</div>
-  </div>
-
-  <div class="dhikr-card">
-    <span class="card-number">٨</span>
-    <div class="dhikr-text">
-      اللَّهُمَّ عَالِمَ الْغَيْبِ وَالشَّهَادَةِ،<br>
-      فَاطِرَ السَّمَوَاتِ وَالْأَرْضِ،<br>
-      رَبَّ كُلِّ شَيْءٍ وَمَلِيكَهُ،<br>
-      أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا أَنْتَ،<br>
-      أَعُوذُ بِكَ مِنْ شَرِّ نَفْسِي وَشَرِّ الشَّيْطَانِ وَشِرْكِهِ
+    <div class="ornament" aria-hidden="true">
+      <span class="spark">✧</span><div class="orb"><span>◇</span></div><span class="spark">✦</span>
     </div>
-    <span class="dhikr-repeat">مرة واحدة</span>
-    <div class="dhikr-source">رواه أبو داود والترمذي وهو صحيح</div>
-  </div>
-
-  <div class="dhikr-card">
-    <span class="card-number">٩</span>
-    <div class="dhikr-text">
-      سُبْحَانَ اللهِ وَبِحَمْدِهِ
-    </div>
-    <span class="dhikr-repeat">مئة مرة (١٠٠×)</span>
-    <div class="dhikr-source">رواه مسلم — من قالها مئة مرة حين يصبح لم يأتِ أحد بأفضل مما جاء به</div>
-  </div>
-
-  <div class="dhikr-card">
-    <span class="card-number">١٠</span>
-    <div class="dhikr-text">
-      لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ،<br>
-      لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ،<br>
-      يُحْيِي وَيُمِيتُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ
-    </div>
-    <span class="dhikr-repeat">عشر مرات (١٠×)</span>
-    <div class="dhikr-source">رواه الترمذي وهو صحيح</div>
-  </div>
-
-  <div class="dhikr-card">
-    <span class="card-number">١١</span>
-    <div class="dhikr-text">
-      حَسْبِيَ اللهُ لَا إِلَهَ إِلَّا هُوَ<br>
-      عَلَيْهِ تَوَكَّلْتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ
-    </div>
-    <span class="dhikr-repeat">سبع مرات (٧×)</span>
-    <div class="dhikr-source">رواه أبو داود وهو صحيح — كفاه الله ما أهمه من أمر الدنيا والآخرة</div>
-  </div>
-
-  <div class="dhikr-card">
-    <span class="card-number">١٢</span>
-    <div class="dhikr-text">
-      اللَّهُمَّ إِنِّي أَصْبَحْتُ أُشْهِدُكَ،<br>
-      وَأُشْهِدُ حَمَلَةَ عَرْشِكَ، وَمَلَائِكَتَكَ،<br>
-      وَجَمِيعَ خَلْقِكَ: أَنَّكَ أَنْتَ اللهُ لَا إِلَهَ إِلَّا أَنْتَ،<br>
-      وَحْدَكَ لَا شَرِيكَ لَكَ،<br>
-      وَأَنَّ مُحَمَّدًا عَبْدُكَ وَرَسُولُكَ
-    </div>
-    <span class="dhikr-repeat">أربع مرات (٤×)</span>
-    <div class="dhikr-source">رواه أبو داود وهو حسن</div>
-  </div>
-
-  <div class="divider">✦ ✦ ✦</div>
-
-  <div class="dhikr-card">
-    <span class="card-number">🌿</span>
-    <div class="dhikr-text">
-      {قُلْ هُوَ اللَّهُ أَحَدٌ}<br>
-      {قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ}<br>
-      {قُلْ أَعُوذُ بِرَبِّ النَّاسِ}
-    </div>
-    <span class="dhikr-repeat">ثلاث مرات لكل سورة (٣×)</span>
-    <div class="dhikr-source">رواه أبو داود والترمذي وهو صحيح</div>
-  </div>
-
-  <div class="dhikr-card">
-    <span class="card-number">🌿</span>
-    <div class="dhikr-text">
-      آيَةُ الْكُرْسِيِّ<br><br>
-      اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ<br>
-      لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ ۚ<br>
-      يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ<br>
-      وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ<br>
-      وَهُوَ الْعَلِيُّ الْعَظِيمُ
-    </div>
-    <span class="dhikr-repeat">مرة واحدة — البقرة: ٢٥٥</span>
-    <div class="dhikr-source">رواه النسائي وهو صحيح — من قرأها في الصباح كان في حفظ الله حتى المساء</div>
-  </div>
-</div>
-
-<!-- ===================== MASAA ===================== -->
-<div id="masaa" class="tab-content">
-  <div class="section-title">
-    <h2>🌙 أذكار المساء</h2>
-    <p>تُقال من بعد صلاة العصر إلى غروب الشمس</p>
-  </div>
-
-  <div class="bismillah">بِسْمِ اللهِ الرَّحْمَنِ الرَّحِيمِ</div>
-
-  <div class="dhikr-card">
-    <span class="card-number">١</span>
-    <div class="dhikr-text">
-      اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا،<br>
-      وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ، وَإِلَيْكَ الْمَصِيرُ
-    </div>
-    <span class="dhikr-repeat">مرة واحدة</span>
-    <div class="dhikr-source">رواه الترمذي وهو صحيح</div>
-  </div>
-
-  <div class="dhikr-card">
-    <span class="card-number">٢</span>
-    <div class="dhikr-text">
-      أَمْسَيْنَا وَأَمْسَى الْمُلْكُ لِلَّهِ رَبِّ الْعَالَمِينَ،<br>
-      اللَّهُمَّ إِنِّي أَسْأَلُكَ خَيْرَ هَذِهِ اللَّيْلَةِ،<br>
-      فَتْحَهَا وَنَصْرَهَا وَنُورَهَا وَبَرَكَتَهَا وَهُدَاهَا،<br>
-      وَأَعُوذُ بِكَ مِنْ شَرِّ مَا فِيهَا وَشَرِّ مَا بَعْدَهَا
-    </div>
-    <span class="dhikr-repeat">مرة واحدة</span>
-    <div class="dhikr-source">رواه أبو داود وهو صحيح</div>
-  </div>
-
-  <div class="dhikr-card">
-    <span class="card-number">٣</span>
-    <div class="dhikr-text">
-      اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي الدُّنْيَا وَالْآخِرَةِ،<br>
-      اللَّهُمَّ إِنِّي أَسْأَلُكَ الْعَفْوَ وَالْعَافِيَةَ فِي دِينِي وَدُنْيَايَ<br>
-      وَأَهْلِي وَمَالِي، اللَّهُمَّ اسْتُرْ عَوْرَاتِي وَآمِنْ رَوْعَاتِي،<br>
-      اللَّهُمَّ احْفَظْنِي مِنْ بَيْنِ يَدَيَّ وَمِنْ خَلْفِي<br>
-      وَعَنْ يَمِينِي وَعَنْ شِمَالِي وَمِنْ فَوْقِي،<br>
-      وَأَعُوذُ بِعَظَمَتِكَ أَنْ أُغْتَالَ مِنْ تَحْتِي
-    </div>
-    <span class="dhikr-repeat">مرة واحدة</span>
-    <div class="dhikr-source">رواه أبو داود وابن ماجه وهو صحيح</div>
-  </div>
-
-  <div class="dhikr-card">
-    <span class="card-number">٤</span>
-    <div class="dhikr-text">
-      بِسْمِ اللهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ<br>
-      فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ
-    </div>
-    <span class="dhikr-repeat">ثلاث مرات (٣×)</span>
-    <div class="dhikr-source">رواه أبو داود والترمذي وهو صحيح</div>
-  </div>
-
-  <div class="dhikr-card">
-    <span class="card-number">٥</span>
-    <div class="dhikr-text">
-      أَعُوذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ
-    </div>
-    <span class="dhikr-repeat">ثلاث مرات (٣×)</span>
-    <div class="dhikr-source">رواه مسلم — من قالها لم يضره شيء</div>
-  </div>
-
-  <div class="dhikr-card">
-    <span class="card-number">٦</span>
-    <div class="dhikr-text">
-      اللَّهُمَّ عَالِمَ الْغَيْبِ وَالشَّهَادَةِ،<br>
-      فَاطِرَ السَّمَوَاتِ وَالْأَرْضِ،<br>
-      رَبَّ كُلِّ شَيْءٍ وَمَلِيكَهُ،<br>
-      أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا أَنْتَ،<br>
-      أَعُوذُ بِكَ مِنْ شَرِّ نَفْسِي وَشَرِّ الشَّيْطَانِ وَشِرْكِهِ
-    </div>
-    <span class="dhikr-repeat">مرة واحدة</span>
-    <div class="dhikr-source">رواه أبو داود والترمذي وهو صحيح</div>
-  </div>
-
-  <div class="dhikr-card">
-    <span class="card-number">٧</span>
-    <div class="dhikr-text">
-      سُبْحَانَ اللهِ وَبِحَمْدِهِ
-    </div>
-    <span class="dhikr-repeat">مئة مرة (١٠٠×)</span>
-    <div class="dhikr-source">رواه مسلم</div>
-  </div>
-
-  <div class="dhikr-card">
-    <span class="card-number">٨</span>
-    <div class="dhikr-text">
-      لَا إِلَهَ إِلَّا اللهُ وَحْدَهُ لَا شَرِيكَ لَهُ،<br>
-      لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ،<br>
-      وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ
-    </div>
-    <span class="dhikr-repeat">عشر مرات (١٠×)</span>
-    <div class="dhikr-source">رواه الترمذي وهو صحيح</div>
-  </div>
-
-  <div class="dhikr-card">
-    <span class="card-number">٩</span>
-    <div class="dhikr-text">
-      حَسْبِيَ اللهُ لَا إِلَهَ إِلَّا هُوَ<br>
-      عَلَيْهِ تَوَكَّلْتُ وَهُوَ رَبُّ الْعَرْشِ الْعَظِيمِ
-    </div>
-    <span class="dhikr-repeat">سبع مرات (٧×)</span>
-    <div class="dhikr-source">رواه أبو داود وهو صحيح</div>
-  </div>
-
-  <div class="dhikr-card">
-    <span class="card-number">١٠</span>
-    <div class="dhikr-text">
-      يَا حَيُّ يَا قَيُّومُ بِرَحْمَتِكَ أَسْتَغِيثُ،<br>
-      أَصْلِحْ لِي شَأْنِي كُلَّهُ،<br>
-      وَلَا تَكِلْنِي إِلَى نَفْسِي طَرْفَةَ عَيْنٍ
-    </div>
-    <span class="dhikr-repeat">مرة واحدة</span>
-    <div class="dhikr-source">رواه الحاكم وهو صحيح</div>
-  </div>
-
-  <div class="divider">✦ ✦ ✦</div>
-
-  <div class="dhikr-card">
-    <span class="card-number">🌿</span>
-    <div class="dhikr-text">
-      {قُلْ هُوَ اللَّهُ أَحَدٌ}<br>
-      {قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ}<br>
-      {قُلْ أَعُوذُ بِرَبِّ النَّاسِ}
-    </div>
-    <span class="dhikr-repeat">ثلاث مرات لكل سورة (٣×)</span>
-    <div class="dhikr-source">رواه أبو داود والترمذي وهو صحيح</div>
-  </div>
-
-  <div class="dhikr-card">
-    <span class="card-number">🌿</span>
-    <div class="dhikr-text">
-      آيَةُ الْكُرْسِيِّ<br><br>
-      اللَّهُ لَا إِلَهَ إِلَّا هُوَ الْحَيُّ الْقَيُّومُ ۚ لَا تَأْخُذُهُ سِنَةٌ وَلَا نَوْمٌ ۚ<br>
-      لَهُ مَا فِي السَّمَاوَاتِ وَمَا فِي الْأَرْضِ ۗ مَنْ ذَا الَّذِي يَشْفَعُ عِنْدَهُ إِلَّا بِإِذْنِهِ ۚ<br>
-      يَعْلَمُ مَا بَيْنَ أَيْدِيهِمْ وَمَا خَلْفَهُمْ ۖ وَلَا يُحِيطُونَ بِشَيْءٍ مِنْ عِلْمِهِ إِلَّا بِمَا شَاءَ ۚ<br>
-      وَسِعَ كُرْسِيُّهُ السَّمَاوَاتِ وَالْأَرْضَ ۖ وَلَا يَئُودُهُ حِفْظُهُمَا ۚ<br>
-      وَهُوَ الْعَلِيُّ الْعَظِيمُ
-    </div>
-    <span class="dhikr-repeat">مرة واحدة — البقرة: ٢٥٥</span>
-    <div class="dhikr-source">رواه النسائي وهو صحيح</div>
-  </div>
-</div>
-
-<!-- ===================== ADIYA ===================== -->
-<div id="adiya" class="tab-content">
-  <div class="section-title">
-    <h2>🤲 أدعية مختارة</h2>
-    <p>أدعية جامعة من القرآن والسنة</p>
-  </div>
-
+  </header>
+  <div class="reading">
   <div class="dua-card">
     <div class="dua-label">دعاء الثبات والعزيمة</div>
     <div class="dua-text">
-      اللهم إني أسألك الثباتَ في الأمرِ والعزيمةَ على الرشدِ،<br>
-      وأسألك شُكرَ نعمتِكَ وحُسنَ عبادتِكَ،<br>
-      وأسألك قلبًا سليمًا ولسانًا صادقًا،<br>
-      وأسألك من خيرِ ما تعلمُ،<br>
-      وأعوذ بك من شرِّ ما تعلمُ
+      اللهم إني أسألك الثباتَ في الأمرِ والعزيمةَ على الرشدِ، وأسألك شُكرَ نعمتِكَ وحُسنَ عبادتِكَ، وأسألك قلبًا سليمًا ولسانًا صادقًا، وأسألك من خيرِ ما تعلمُ، وأعوذ بك من شرِّ ما تعلمُ
     </div>
     <div class="dua-source">رواه الطبراني وصححه الألباني</div>
   </div>
@@ -595,8 +678,7 @@
   <div class="dua-card">
     <div class="dua-label">دعاء من القرآن الكريم</div>
     <div class="dua-text">
-      رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً<br>
-      وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ
+      رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ
     </div>
     <div class="dua-source">البقرة: ٢٠١ — كان أكثر دعاء النبي ﷺ • متفق عليه</div>
   </div>
@@ -604,8 +686,7 @@
   <div class="dua-card">
     <div class="dua-label">دعاء الهداية والتقى</div>
     <div class="dua-text">
-      اللَّهُمَّ إِنِّي أَسْأَلُكَ الْهُدَى،<br>
-      وَالتُّقَى، وَالْعَفَافَ، وَالْغِنَى
+      اللَّهُمَّ إِنِّي أَسْأَلُكَ الْهُدَى، وَالتُّقَى، وَالْعَفَافَ، وَالْغِنَى
     </div>
     <div class="dua-source">رواه مسلم</div>
   </div>
@@ -621,11 +702,7 @@
   <div class="dua-card">
     <div class="dua-label">دعاء صلاح الحال</div>
     <div class="dua-text">
-      اللَّهُمَّ أَصْلِحْ لِي دِينِيَ الَّذِي هُوَ عِصْمَةُ أَمْرِي،<br>
-      وَأَصْلِحْ لِي دُنْيَايَ الَّتِي فِيهَا مَعَاشِي،<br>
-      وَأَصْلِحْ لِي آخِرَتِي الَّتِي فِيهَا مَعَادِي،<br>
-      وَاجْعَلِ الْحَيَاةَ زِيَادَةً لِي فِي كُلِّ خَيْرٍ،<br>
-      وَاجْعَلِ الْمَوْتَ رَاحَةً لِي مِنْ كُلِّ شَرٍّ
+      اللَّهُمَّ أَصْلِحْ لِي دِينِيَ الَّذِي هُوَ عِصْمَةُ أَمْرِي، وَأَصْلِحْ لِي دُنْيَايَ الَّتِي فِيهَا مَعَاشِي، وَأَصْلِحْ لِي آخِرَتِي الَّتِي فِيهَا مَعَادِي، وَاجْعَلِ الْحَيَاةَ زِيَادَةً لِي فِي كُلِّ خَيْرٍ، وَاجْعَلِ الْمَوْتَ رَاحَةً لِي مِنْ كُلِّ شَرٍّ
     </div>
     <div class="dua-source">رواه مسلم</div>
   </div>
@@ -633,10 +710,7 @@
   <div class="dua-card">
     <div class="dua-label">دعاء الاستعاذة الجامع</div>
     <div class="dua-text">
-      اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ،<br>
-      وَأَعُوذُ بِكَ مِنَ الْعَجْزِ وَالْكَسَلِ،<br>
-      وَأَعُوذُ بِكَ مِنَ الْجُبْنِ وَالْبُخْلِ،<br>
-      وَأَعُوذُ بِكَ مِنْ غَلَبَةِ الدَّيْنِ وَقَهْرِ الرِّجَالِ
+      اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْهَمِّ وَالْحَزَنِ، وَأَعُوذُ بِكَ مِنَ الْعَجْزِ وَالْكَسَلِ، وَأَعُوذُ بِكَ مِنَ الْجُبْنِ وَالْبُخْلِ، وَأَعُوذُ بِكَ مِنْ غَلَبَةِ الدَّيْنِ وَقَهْرِ الرِّجَالِ
     </div>
     <div class="dua-source">رواه البخاري</div>
   </div>
@@ -644,33 +718,29 @@
   <div class="dua-card">
     <div class="dua-label">دعاء النور</div>
     <div class="dua-text">
-      اللَّهُمَّ اجْعَلْ فِي قَلْبِي نُورًا،<br>
-      وَفِي لِسَانِي نُورًا، وَفِي سَمْعِي نُورًا،<br>
-      وَفِي بَصَرِي نُورًا، وَمِنْ فَوْقِي نُورًا،<br>
-      وَمِنْ تَحْتِي نُورًا، وَعَنْ يَمِينِي نُورًا،<br>
-      وَعَنْ يَسَارِي نُورًا، وَمِنْ أَمَامِي نُورًا،<br>
-      وَمِنْ خَلْفِي نُورًا، وَاجْعَلْ لِي نُورًا
+      اللَّهُمَّ اجْعَلْ فِي قَلْبِي نُورًا، وَفِي لِسَانِي نُورًا، وَفِي سَمْعِي نُورًا، وَفِي بَصَرِي نُورًا، وَمِنْ فَوْقِي نُورًا، وَمِنْ تَحْتِي نُورًا، وَعَنْ يَمِينِي نُورًا، وَعَنْ يَسَارِي نُورًا، وَمِنْ أَمَامِي نُورًا، وَمِنْ خَلْفِي نُورًا، وَاجْعَلْ لِي نُورًا
     </div>
     <div class="dua-source">متفق عليه</div>
   </div>
-</div>
-
-<!-- ===================== NABI ===================== -->
-<div id="nabi" class="tab-content">
-  <div class="section-title">
-    <h2>✨ أدعية النبي ﷺ</h2>
-    <p>أدعية صحيحة ثابتة من السنة النبوية المطهرة</p>
   </div>
+</section>
 
+<section id="nabi" class="tab-content">
+  <header class="section-title">
+    <div class="hero-copy">
+      <span class="hero-label">من السنة النبوية</span>
+      <h2>أدعية النبي ﷺ</h2>
+      <p>أدعية صحيحة ثابتة من السنة النبوية المطهرة</p>
+    </div>
+    <div class="ornament" aria-hidden="true">
+      <span class="spark">✧</span><div class="orb"><span>✧</span></div><span class="spark">✦</span>
+    </div>
+  </header>
+  <div class="reading">
   <div class="dua-card">
     <div class="dua-label">دعاء الإسلام والتوكل — متفق عليه</div>
     <div class="dua-text">
-      اللَّهُمَّ لَكَ أَسْلَمْتُ، وَبِكَ آمَنْتُ،<br>
-      وَعَلَيْكَ تَوَكَّلْتُ، وَإِلَيْكَ خَاصَمْتُ،<br>
-      وَبِكَ حَاكَمْتُ، فَاغْفِرْ لِي مَا قَدَّمْتُ وَمَا أَخَّرْتُ،<br>
-      وَمَا أَسْرَرْتُ وَمَا أَعْلَنْتُ،<br>
-      وَمَا أَنْتَ أَعْلَمُ بِهِ مِنِّي،<br>
-      لَا إِلَهَ إِلَّا أَنْتَ
+      اللَّهُمَّ لَكَ أَسْلَمْتُ، وَبِكَ آمَنْتُ، وَعَلَيْكَ تَوَكَّلْتُ، وَإِلَيْكَ خَاصَمْتُ، وَبِكَ حَاكَمْتُ، فَاغْفِرْ لِي مَا قَدَّمْتُ وَمَا أَخَّرْتُ، وَمَا أَسْرَرْتُ وَمَا أَعْلَنْتُ، وَمَا أَنْتَ أَعْلَمُ بِهِ مِنِّي، لَا إِلَهَ إِلَّا أَنْتَ
     </div>
     <div class="dua-source">متفق عليه</div>
   </div>
@@ -678,14 +748,7 @@
   <div class="dua-card">
     <div class="dua-label">دعاء المغفرة الجامع — متفق عليه</div>
     <div class="dua-text">
-      اللَّهُمَّ اغْفِرْ لِي خَطِيئَتِي وَجَهْلِي،<br>
-      وَإِسْرَافِي فِي أَمْرِي، وَمَا أَنْتَ أَعْلَمُ بِهِ مِنِّي،<br>
-      اللَّهُمَّ اغْفِرْ لِي جِدِّي وَهَزْلِي،<br>
-      وَخَطَئِي وَعَمْدِي، وَكُلُّ ذَلِكَ عِنْدِي،<br>
-      اللَّهُمَّ اغْفِرْ لِي مَا قَدَّمْتُ وَمَا أَخَّرْتُ،<br>
-      وَمَا أَسْرَرْتُ وَمَا أَعْلَنْتُ، وَمَا أَنْتَ أَعْلَمُ بِهِ مِنِّي،<br>
-      أَنْتَ الْمُقَدِّمُ، وَأَنْتَ الْمُؤَخِّرُ،<br>
-      وَأَنْتَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ
+      اللَّهُمَّ اغْفِرْ لِي خَطِيئَتِي وَجَهْلِي، وَإِسْرَافِي فِي أَمْرِي، وَمَا أَنْتَ أَعْلَمُ بِهِ مِنِّي، اللَّهُمَّ اغْفِرْ لِي جِدِّي وَهَزْلِي، وَخَطَئِي وَعَمْدِي، وَكُلُّ ذَلِكَ عِنْدِي، اللَّهُمَّ اغْفِرْ لِي مَا قَدَّمْتُ وَمَا أَخَّرْتُ، وَمَا أَسْرَرْتُ وَمَا أَعْلَنْتُ، وَمَا أَنْتَ أَعْلَمُ بِهِ مِنِّي، أَنْتَ الْمُقَدِّمُ، وَأَنْتَ الْمُؤَخِّرُ، وَأَنْتَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ
     </div>
     <div class="dua-source">متفق عليه</div>
   </div>
@@ -693,17 +756,7 @@
   <div class="dua-card">
     <div class="dua-label">دعاء التهجد — متفق عليه</div>
     <div class="dua-text">
-      اللَّهُمَّ لَكَ الْحَمْدُ، أَنْتَ نُورُ السَّمَاوَاتِ وَالْأَرْضِ،<br>
-      وَلَكَ الْحَمْدُ، أَنْتَ قَيَّامُ السَّمَاوَاتِ وَالْأَرْضِ،<br>
-      وَلَكَ الْحَمْدُ، أَنْتَ رَبُّ السَّمَاوَاتِ وَالْأَرْضِ وَمَنْ فِيهِنَّ،<br>
-      أَنْتَ الْحَقُّ، وَوَعْدُكَ الْحَقُّ، وَقَوْلُكَ الْحَقُّ،<br>
-      وَلِقَاؤُكَ الْحَقُّ، وَالْجَنَّةُ حَقٌّ، وَالنَّارُ حَقٌّ،<br>
-      وَالسَّاعَةُ حَقٌّ، اللَّهُمَّ لَكَ أَسْلَمْتُ،<br>
-      وَبِكَ آمَنْتُ، وَعَلَيْكَ تَوَكَّلْتُ،<br>
-      وَإِلَيْكَ أَنَبْتُ، وَبِكَ خَاصَمْتُ، وَإِلَيْكَ حَاكَمْتُ،<br>
-      فَاغْفِرْ لِي مَا قَدَّمْتُ وَمَا أَخَّرْتُ،<br>
-      وَمَا أَسْرَرْتُ وَمَا أَعْلَنْتُ،<br>
-      أَنْتَ إِلَهِي لَا إِلَهَ إِلَّا أَنْتَ
+      اللَّهُمَّ لَكَ الْحَمْدُ، أَنْتَ نُورُ السَّمَاوَاتِ وَالْأَرْضِ، وَلَكَ الْحَمْدُ، أَنْتَ قَيَّامُ السَّمَاوَاتِ وَالْأَرْضِ، وَلَكَ الْحَمْدُ، أَنْتَ رَبُّ السَّمَاوَاتِ وَالْأَرْضِ وَمَنْ فِيهِنَّ، أَنْتَ الْحَقُّ، وَوَعْدُكَ الْحَقُّ، وَقَوْلُكَ الْحَقُّ، وَلِقَاؤُكَ الْحَقُّ، وَالْجَنَّةُ حَقٌّ، وَالنَّارُ حَقٌّ، وَالسَّاعَةُ حَقٌّ، اللَّهُمَّ لَكَ أَسْلَمْتُ، وَبِكَ آمَنْتُ، وَعَلَيْكَ تَوَكَّلْتُ، وَإِلَيْكَ أَنَبْتُ، وَبِكَ خَاصَمْتُ، وَإِلَيْكَ حَاكَمْتُ، فَاغْفِرْ لِي مَا قَدَّمْتُ وَمَا أَخَّرْتُ، وَمَا أَسْرَرْتُ وَمَا أَعْلَنْتُ، أَنْتَ إِلَهِي لَا إِلَهَ إِلَّا أَنْتَ
     </div>
     <div class="dua-source">متفق عليه — كان النبي ﷺ يقوله حين يقوم من الليل للصلاة</div>
   </div>
@@ -711,13 +764,7 @@
   <div class="dua-card">
     <div class="dua-label">دعاء الحمد والثناء — رواه مسلم</div>
     <div class="dua-text">
-      اللَّهُمَّ رَبَّنَا لَكَ الْحَمْدُ،<br>
-      مِلْءَ السَّمَاوَاتِ وَمِلْءَ الْأَرْضِ،<br>
-      وَمِلْءَ مَا شِئْتَ مِنْ شَيْءٍ بَعْدُ،<br>
-      أَهْلَ الثَّنَاءِ وَالْمَجْدِ،<br>
-      لَا مَانِعَ لِمَا أَعْطَيْتَ،<br>
-      وَلَا مُعْطِيَ لِمَا مَنَعْتَ،<br>
-      وَلَا يَنْفَعُ ذَا الْجَدِّ مِنْكَ الْجَدُّ
+      اللَّهُمَّ رَبَّنَا لَكَ الْحَمْدُ، مِلْءَ السَّمَاوَاتِ وَمِلْءَ الْأَرْضِ، وَمِلْءَ مَا شِئْتَ مِنْ شَيْءٍ بَعْدُ، أَهْلَ الثَّنَاءِ وَالْمَجْدِ، لَا مَانِعَ لِمَا أَعْطَيْتَ، وَلَا مُعْطِيَ لِمَا مَنَعْتَ، وَلَا يَنْفَعُ ذَا الْجَدِّ مِنْكَ الْجَدُّ
     </div>
     <div class="dua-source">رواه مسلم</div>
   </div>
@@ -725,12 +772,7 @@
   <div class="dua-card">
     <div class="dua-label">دعاء الصلاة الإبراهيمية — متفق عليه</div>
     <div class="dua-text">
-      اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ،<br>
-      كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ،<br>
-      إِنَّكَ حَمِيدٌ مَجِيدٌ،<br>
-      اللَّهُمَّ بَارِكْ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ،<br>
-      كَمَا بَارَكْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ،<br>
-      إِنَّكَ حَمِيدٌ مَجِيدٌ
+      اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ، كَمَا صَلَّيْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ، اللَّهُمَّ بَارِكْ عَلَى مُحَمَّدٍ وَعَلَى آلِ مُحَمَّدٍ، كَمَا بَارَكْتَ عَلَى إِبْرَاهِيمَ وَعَلَى آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ
     </div>
     <div class="dua-source">متفق عليه</div>
   </div>
@@ -738,11 +780,7 @@
   <div class="dua-card">
     <div class="dua-label">دعاء الاسم الأعظم — رواه أبو داود وهو صحيح</div>
     <div class="dua-text">
-      اللَّهُمَّ إِنِّي أَسْأَلُكَ بِأَنَّ لَكَ الْحَمْدَ<br>
-      لَا إِلَهَ إِلَّا أَنْتَ الْمَنَّانُ،<br>
-      بَدِيعُ السَّمَوَاتِ وَالْأَرْضِ،<br>
-      يَا ذَا الْجَلَالِ وَالْإِكْرَامِ،<br>
-      يَا حَيُّ يَا قَيُّومُ إِنِّي أَسْأَلُكَ
+      اللَّهُمَّ إِنِّي أَسْأَلُكَ بِأَنَّ لَكَ الْحَمْدَ لَا إِلَهَ إِلَّا أَنْتَ الْمَنَّانُ، بَدِيعُ السَّمَوَاتِ وَالْأَرْضِ، يَا ذَا الْجَلَالِ وَالْإِكْرَامِ، يَا حَيُّ يَا قَيُّومُ إِنِّي أَسْأَلُكَ
     </div>
     <div class="dua-source">رواه أبو داود والنسائي وهو صحيح — قال النبي ﷺ: دعا الله باسمه العظيم الذي إذا دُعي به أجاب</div>
   </div>
@@ -750,25 +788,224 @@
   <div class="dua-card">
     <div class="dua-label">سيد الاستغفار — رواه البخاري</div>
     <div class="dua-text">
-      اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ،<br>
-      خَلَقْتَنِي وَأَنَا عَبْدُكَ،<br>
-      وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ،<br>
-      أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ،<br>
-      أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ وَأَبُوءُ بِذَنْبِي،<br>
-      فَاغْفِرْ لِي، فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ
+      اللَّهُمَّ أَنْتَ رَبِّي لَا إِلَهَ إِلَّا أَنْتَ، خَلَقْتَنِي وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ مِنْ شَرِّ مَا صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ وَأَبُوءُ بِذَنْبِي، فَاغْفِرْ لِي، فَإِنَّهُ لَا يَغْفِرُ الذُّنُوبَ إِلَّا أَنْتَ
     </div>
     <div class="dua-source">رواه البخاري — سيد الاستغفار: من قاله موقناً به في الصباح فمات من يومه دخل الجنة</div>
   </div>
-</div>
-
+  </div>
+</section>
+</main>
+<div class="sr-only" role="status" id="announcement"></div>
 <script>
-function showTab(id) {
-  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  event.currentTarget.classList.add('active');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+(() => {
+  const root = document.documentElement;
+  const tabs = [...document.querySelectorAll('.tab-btn')];
+  const panels = [...document.querySelectorAll('.tab-content')];
+  const number = new Intl.NumberFormat('ar', { numberingSystem: 'arab' });
+  const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+  const announcement = document.querySelector('#announcement');
+  const prefix = 'daily-adhkar:';
+  const memory = new Map();
+
+  function read(key) {
+    if (memory.has(key)) return memory.get(key);
+    try { return localStorage.getItem(prefix + key); } catch { return null; }
+  }
+
+  function save(key, value) {
+    try {
+      localStorage.setItem(prefix + key, value);
+      memory.delete(key);
+    } catch { memory.set(key, value); }
+  }
+
+  function select(index, updateUrl = false, focus = false) {
+    const panel = panels[index];
+    tabs.forEach((tab, i) => {
+      tab.setAttribute('aria-selected', String(i === index));
+      tab.tabIndex = i === index ? 0 : -1;
+      panels[i].hidden = i !== index;
+    });
+    root.dataset.theme = panel.id;
+    root.style.setProperty('--tab', index);
+    if (updateUrl && location.hash !== '#' + panel.id) {
+      try { history.pushState(null, '', '#' + panel.id); }
+      catch { location.hash = panel.id; }
+      window.scrollTo(0, 0);
+    }
+    if (focus) tabs[index].focus({ preventScroll: true });
+  }
+
+  function selectFromUrl() {
+    const index = tabs.findIndex(tab => tab.hash === location.hash);
+    select(index < 0 ? 0 : index);
+  }
+
+  document.querySelector('.tabs').setAttribute('role', 'tablist');
+  tabs.forEach((tab, i) => {
+    tab.setAttribute('role', 'tab');
+    tab.setAttribute('aria-controls', panels[i].id);
+    tab.addEventListener('click', event => {
+      if (event.metaKey || event.altKey || event.ctrlKey || event.shiftKey) return;
+      event.preventDefault();
+      select(i, true);
+    });
+    tab.addEventListener('keydown', event => {
+      const last = tabs.length - 1;
+      const destinations = { ArrowLeft: (i + 1) % tabs.length, ArrowRight: (i + last) % tabs.length, Home: 0, End: last };
+      if (event.key === ' ') {
+        event.preventDefault();
+        select(i, true);
+      } else if (Object.prototype.hasOwnProperty.call(destinations, event.key)) {
+        event.preventDefault();
+        select(destinations[event.key], true, true);
+      }
+    });
+    panels[i].setAttribute('role', 'tabpanel');
+    panels[i].setAttribute('aria-labelledby', tab.id);
+    panels[i].tabIndex = 0;
+  });
+  addEventListener('hashchange', selectFromUrl);
+  addEventListener('popstate', selectFromUrl);
+  selectFromUrl();
+
+  const sizeControls = document.querySelector('.text-controls');
+  const sizeButtons = [...sizeControls.querySelectorAll('button')];
+  const sizes = [1.4, 1.65, 1.9, 2.15, 2.4];
+  let size = Number(read('size') ?? 1);
+  if (!Number.isInteger(size) || size < 0 || size >= sizes.length) size = 1;
+
+  function setSize() {
+    root.style.setProperty('--reading-size', sizes[size] + 'rem');
+    sizeButtons[0].disabled = size === 0;
+    sizeButtons[1].disabled = size === sizes.length - 1;
+  }
+
+  sizeButtons.forEach(button => button.addEventListener('click', () => {
+    size += Number(button.dataset.size);
+    setSize();
+    save('size', String(size));
+  }));
+  setSize();
+  sizeControls.hidden = false;
+
+  function today() {
+    const now = new Date();
+    return [now.getFullYear(), now.getMonth() + 1, now.getDate()].join('-');
+  }
+
+  function setupCounter(panel) {
+    const progress = panel.querySelector('.progress');
+    const track = progress.querySelector('.progress-track');
+    const fill = progress.querySelector('.progress-fill');
+    const summary = progress.querySelector('.progress-value');
+    const resume = progress.querySelector('.resume');
+    const reset = progress.querySelector('.reset');
+    const cards = [...panel.querySelectorAll('.dhikr-card')].map(card => {
+      const button = card.querySelector('.count');
+      const undo = card.querySelector('.undo');
+      return {
+        card, button, undo,
+        target: Number(card.dataset.target),
+        label: card.querySelector('.card-title').textContent,
+        caption: button.querySelector('span'),
+        value: button.querySelector('bdi'),
+      };
+    });
+    const key = 'progress:' + panel.id;
+    let date;
+    let counts;
+
+    function load() {
+      date = today();
+      let saved;
+      try { saved = JSON.parse(read(key)); } catch {}
+      counts = cards.map(({ target }, i) => {
+        const value = saved?.date === date ? saved.counts?.[i] : 0;
+        return Number.isInteger(value) ? Math.min(target, Math.max(0, value)) : 0;
+      });
+    }
+
+    function render() {
+      let completed = 0;
+      cards.forEach(({ card, button, undo, target, label, caption, value }, i) => {
+        const done = counts[i] === target;
+        completed += Number(done);
+        card.toggleAttribute('data-complete', done);
+        button.setAttribute('aria-disabled', String(done));
+        undo.setAttribute('aria-disabled', String(counts[i] === 0));
+        caption.textContent = done ? 'تمّ الذكر ✓' : 'سجّل تكرارًا';
+        value.textContent = number.format(counts[i]) + ' من ' + number.format(target);
+        button.setAttribute('aria-label', (done ? 'تمّ ' : 'سجّل تكرارًا: ') + label + '، ' + value.textContent);
+      });
+      summary.textContent = completed === cards.length
+        ? 'اكتملت الأذكار ✓'
+        : number.format(completed) + ' من ' + number.format(cards.length);
+      track.setAttribute('aria-valuemax', cards.length);
+      track.setAttribute('aria-valuenow', completed);
+      track.setAttribute('aria-valuetext', summary.textContent);
+      fill.style.transform = 'scaleX(' + completed / cards.length + ')';
+      reset.disabled = counts.every(count => count === 0);
+      resume.disabled = completed === cards.length;
+    }
+
+    function persist() {
+      save(key, JSON.stringify({ date, counts }));
+      render();
+    }
+
+    cards.forEach(({ button, undo, target, label }, i) => {
+      function changeCount(amount) {
+        load();
+        const previous = counts[i];
+        counts[i] = Math.max(0, Math.min(target, previous + amount));
+        if (counts[i] === previous) return;
+        persist();
+        announcement.textContent = counts[i] === target ? 'تمّ ' + label : label + '، ' + number.format(counts[i]) + ' من ' + number.format(target);
+      }
+      button.addEventListener('click', () => changeCount(1));
+      undo.addEventListener('click', () => changeCount(-1));
+    });
+    resume.addEventListener('click', () => {
+      load();
+      render();
+      const next = cards.find(({ target }, i) => counts[i] < target);
+      if (!next) return;
+      next.button.focus({ preventScroll: true });
+      next.card.scrollIntoView({ block: 'start', behavior: reducedMotion.matches ? 'auto' : 'smooth' });
+    });
+    reset.addEventListener('click', () => {
+      if (!confirm('إعادة عدّادات هذا القسم إلى الصفر؟')) return;
+      load();
+      counts.fill(0);
+      persist();
+      announcement.textContent = 'أُعيد ضبط العدّادات';
+    });
+
+    function refresh() { load(); render(); }
+    refresh();
+    addEventListener('storage', event => {
+      if (event.key === prefix + key || event.key === null) {
+        memory.delete(key);
+        refresh();
+      }
+    });
+    addEventListener('pageshow', refresh);
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) refresh();
+    });
+    setInterval(() => { if (date !== today()) refresh(); }, 30000);
+    progress.hidden = false;
+    cards.forEach(({ card }) => { card.querySelector('.actions').hidden = false; });
+  }
+
+  for (const panel of panels.filter(panel => panel.querySelector('.progress'))) setupCounter(panel);
+  root.classList.add('enhanced');
+
+  if (location.protocol !== 'file:' && 'serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  }
+})();
 </script>
 </body>
 </html>
