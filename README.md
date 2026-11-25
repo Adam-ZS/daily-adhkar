@@ -38,10 +38,22 @@
 
 Cards include references and repetition counts as applicable. The collection draws on Hisn Al-Muslim and hadith collections including Sahih al-Bukhari, Sahih Muslim, Sunan Abi Dawud, and Jamiʿ at-Tirmidhi. Both daily sections include the complete Al-Ikhlas, Al-Falaq, and An-Nas surahs.
 
-## Project and contributions
+## Help improve Daily Adhkar
 
-If you spot a problem with a text, attribution, or repetition count, [send a source correction](https://github.com/Adam-ZS/daily-adhkar/issues/new?template=content_correction.md).
+Found a typo, incorrect attribution, or repetition count that needs checking? Quote the Arabic text, identify the section, and include a verse number, hadith number, or source link if you have one.
 
-[Releases](https://github.com/Adam-ZS/daily-adhkar/releases) · [Contributing](CONTRIBUTING.md) · [Accessibility](ACCESSIBILITY.md) · [Code of Conduct](CODE_OF_CONDUCT.md) · [Security](SECURITY.md)
+<a href="https://github.com/Adam-ZS/daily-adhkar/issues/new?template=content_correction.md"><img src="docs/readme/source-correction.svg" width="210" alt="Suggest a source correction"></a>
 
-The app has no accounts, analytics, or runtime dependencies. Original project code and documentation use the [MIT License](LICENSE). [Amiri Quran](https://aliftype.com/amiri/english.html) uses the [SIL Open Font License](docs/Amiri-OFL.txt).
+| Resource | What you’ll find |
+| --- | --- |
+| [Releases](https://github.com/Adam-ZS/daily-adhkar/releases) | Release notes and standalone HTML downloads |
+| [Contributing](CONTRIBUTING.md) | How to run the app locally and submit changes |
+| [Accessibility](ACCESSIBILITY.md) | Reading and navigation features, known limitations, and how to report a barrier |
+| [Code of Conduct](CODE_OF_CONDUCT.md) | How we expect contributors to treat one another |
+| [Security](SECURITY.md) | How to report a vulnerability privately |
+
+### Privacy and licenses
+
+Reading progress and text size are stored on your device. The app runs without accounts, analytics, or third-party runtime dependencies.
+
+The original code and documentation are available under the [MIT License](LICENSE). [Amiri Quran](https://aliftype.com/amiri/english.html) is distributed under the [SIL Open Font License](docs/Amiri-OFL.txt).
